@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "295485519471",
+    "project_id": "blescandemo-test20200215",
+    "storage_bucket": "blescandemo-test20200215.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:295485519471:android:e36459677a892081647f9a",
+        "android_client_info": {
+          "package_name": "com.minewbeacon.blescan.demo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "295485519471-8o5png4a4a4p2di3odldi4j7k02fnrc1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNDCDhSd74qkGS9V5LRkSM2aMT0rzt4uI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "295485519471-8o5png4a4a4p2di3odldi4j7k02fnrc1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,54 @@
+
+<!-- 근태-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.minewbeacon.blescan.demo.HomeFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/OnWork"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="출근" />
+
+        <TextView
+            android:id="@+id/OnworkView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="오늘의 출근 시간: " />
+
+        <Button
+            android:id="@+id/OffWork"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="퇴근" />
+        <TextView
+            android:id="@+id/OffworkView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="오늘의 퇴근 시간: " />
+        <TextView
+            android:id="@+id/TodayworkView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="오늘의 근무 시간: " />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="근태"
+        android:textSize="32dp"
+        android:gravity="center"/>
+
+</FrameLayout>

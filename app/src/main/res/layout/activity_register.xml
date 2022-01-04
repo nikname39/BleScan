@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 회원가입-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.minewbeacon.blescan.demo.Register">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="normal"
+        android:textSize="36sp"
+        android:textColor="#000000"
+        android:letterSpacing="-0.02"
+        tools:text=" 회원가입"/>
+
+
+    <EditText
+        android:id="@+id/et_email"
+        android:layout_width="343dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="100dp"
+        android:ems="10"
+        android:hint=" 이메일 입력하세요"
+        android:inputType="textEmailAddress"
+        android:text=""
+        android:background="@drawable/rectangle_3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/et_pwd"
+        android:layout_width="343dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="172dp"
+        android:ems="10"
+        android:hint=" 비밀번호 입력하세요"
+        android:inputType="textPassword"
+        android:text=""
+        android:background="@drawable/rectangle_3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/et_name"
+        android:layout_width="343dp"
+        android:layout_height="52dp"
+        android:background="@drawable/rectangle_3"
+        android:layout_marginTop="240dp"
+        android:ems="10"
+        android:hint=" 이름을 입력하세요"
+        android:inputType="textPersonName"
+        android:text=""
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_register"
+        android:layout_width="343dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="172dp"
+        android:background="@drawable/rectangle_2"
+        android:text="가입완료"
+        android:textColor="#ffffff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_name" />
+</androidx.constraintlayout.widget.ConstraintLayout>

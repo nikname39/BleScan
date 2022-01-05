@@ -51,8 +51,8 @@ public class HomeFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String mParam1= "00시00분";
+    private String mParam2= "00시00분";
     private int mintParam1, mintParam2;
     private TextView mDisplayDate, mOnworkView, mOffworkView, mTodayworkView;
     private FirebaseAuth mFirebaseAuth;
@@ -61,7 +61,6 @@ public class HomeFragment extends Fragment {
     private Button mBtnOffWork;
     private String Name = "";
     private String Work = "";
-
 
 
     public HomeFragment() {
@@ -110,6 +109,8 @@ public class HomeFragment extends Fragment {
         //전날 시간 구하기
         Calendar cal = Calendar.getInstance();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        //cal.add(Calendar.DATE, +1);
+
         cal.add(Calendar.DATE, -1);
         String YesterdayDate = dateFormat.format(cal.getTime());
 
@@ -121,7 +122,7 @@ public class HomeFragment extends Fragment {
         int minute = cal.get(Calendar.MINUTE);
         int dayNum = cal.get(Calendar.DAY_OF_WEEK);
 
-        String date = year + "-" + (month+1) + "-" + day;
+        String date = dateFormat.format(cal.getTime());
         String Timedate = hour + "시" + minute + "분";
         String currenttime = String.valueOf(hour*60+minute);
 
@@ -152,7 +153,7 @@ public class HomeFragment extends Fragment {
         }
 
         //mDisplayDate.setText(date+" "+dayString+"요일");
-        mDisplayDate.setText(YesterdayDate);
+        mDisplayDate.setText(date);
 
         //출퇴근 시간 가져오기
 
@@ -187,26 +188,26 @@ public class HomeFragment extends Fragment {
                     account.setTime_work_start(currenttime);
                     account.setTime_work_end(currenttime);
 
-                    mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).child("name").addValueEventListener(new ValueEventListener() {
+                    mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             String value = dataSnapshot.getValue(String.class);
                             Name= value;
 
                             //출근 시간 불러오기
-                            mDatabaseRef.child("Attendance").child(date).child(Name).child("work_start").addValueEventListener(new ValueEventListener() {
+                            mDatabaseRef.child("Attendance").child(date).child(Name).child("work_start").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot datasnapshot1) {
                                     String value1 = datasnapshot1.getValue(String.class);
                                     mParam1 = value1;
 
                                     if (value1 == null) {
-                                        Toast.makeText(getActivity(), "Value 1 null.", Toast.LENGTH_SHORT).show();
-                                        mOnworkView.setText("오늘의 출근 시간: 없음");
-                                        //mOnworkView.setText("오늘의 출근 시간:" + mParam1);
+                                        //mOnworkView.setText("오늘의 출근 시간: 없음");
+                                        mOnworkView.setText("오늘의 출근 시간:" + Timedate);
                                         //mDatabaseRef.child("Attendance").child(date).child(Name).setValue(account);
                                         mDatabaseRef.child("Attendance").child(date).child(Name).child("Time_work_start").setValue(currenttime);
                                         mDatabaseRef.child("Attendance").child(date).child(Name).child("work_start").setValue(Timedate);
+                                        mParam1 = Timedate;
                                     } else {
                                         mOnworkView.setText("오늘의 출근 시간: "+mParam1);
                                     }
@@ -218,18 +219,19 @@ public class HomeFragment extends Fragment {
                             });
 
                             //퇴근 시간 불러오기
-                            mDatabaseRef.child("Attendance").child(date).child(Name).child("work_end").addValueEventListener(new ValueEventListener() {
+                            mDatabaseRef.child("Attendance").child(date).child(Name).child("work_end").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot datasnapshot2) {
                                     //mDatabaseRef.child("Attendance").child(date).child(Name).child("work_end").removeValue();
                                     String value2 = datasnapshot2.getValue(String.class);
                                     mDatabaseRef.child("Attendance").child(date).child(Name).child("work_end").removeEventListener(this);
-                                    String mParam2 = value2;
+                                    mParam2 = value2;
                                     if (value2 == null) {
                                         //mDatabaseRef.child("Attendance").child(date).child(Name).setValue(account);
                                         mDatabaseRef.child("Attendance").child(date).child(Name).child("Time_work_end").setValue(currenttime);
                                         mDatabaseRef.child("Attendance").child(date).child(Name).child("work_end").setValue(Timedate);
                                         mOffworkView.setText("마지막 근무 시간: 없음");
+                                        mParam2 = Timedate;
 
                                     } else {
                                         //mDatabaseRef.child("Attendance").child(date).child(Name).setValue(account);
@@ -239,68 +241,76 @@ public class HomeFragment extends Fragment {
                                     }
 
                                     //근무시간 구하기
-                                    try {
-                                        mDatabaseRef.child("Attendance").child(date).child(Name).child("Time_work_start").addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot datasnapshot3) {
-                                                String value3 = datasnapshot3.getValue(String.class);
-                                                String Todaywork_Hour = String.valueOf((Integer.parseInt(currenttime) - Integer.parseInt(value3)) / 60);
-                                                String Todaywork_Minutes = String.valueOf((Integer.parseInt(currenttime) - Integer.parseInt(value3)) % 60);
+                                    mDatabaseRef.child("Attendance").child(date).child(Name).child("Time_work_start").addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot datasnapshot3) {
+                                            String value3 = datasnapshot3.getValue(String.class);
+                                            String Todaywork_Hour = String.valueOf((Integer.parseInt(currenttime) - Integer.parseInt(value3)) / 60);
+                                            String Todaywork_Minutes = String.valueOf((Integer.parseInt(currenttime) - Integer.parseInt(value3)) % 60);
 
-                                                if (mParam1 == null) {
-                                                    System.out.println("null");
+                                            int mintParam1 = Integer.parseInt(mParam1.substring(0, mParam1.indexOf("시")));
+                                            int mintParam2 = Integer.parseInt(mParam2.substring(0, mParam2.indexOf("시")));
 
+                                            if (value3 == null) {
+                                                mOnworkView.setText("오늘의 출근 시간: 없음");
+                                                //mOnworkView.setText("오늘의 출근 시간:" + mParam1);
+                                                //mDatabaseRef.child("Attendance").child(date).child(Name).setValue(account);
+                                                mDatabaseRef.child("Attendance").child(date).child(Name).child("Time_work_start").setValue(currenttime);
+                                                mDatabaseRef.child("Attendance").child(date).child(Name).child("work_start").setValue(Timedate);
+                                            } else {
+
+                                                if ((mintParam1 <= 12) && (14 <= mintParam2)) {
+                                                    Todaywork_Hour = String.valueOf(Integer.parseInt(Todaywork_Hour) - 1);
+                                                    mOnworkView.setText("오늘의 출근 시간: " + mParam1);
+                                                    mTodayworkView.setText("오늘의 근무 시간: " + Todaywork_Hour + "시간" + Todaywork_Minutes + "분");
                                                 } else {
-                                                    int mintParam1 = Integer.parseInt(mParam1.substring(0, mParam1.indexOf("시")));
-                                                    int mintParam2 = Integer.parseInt(mParam2.substring(0, mParam2.indexOf("시")));
+                                                    mOnworkView.setText("오늘의 출근 시간: " + mParam1);
+                                                    mTodayworkView.setText("오늘의 근무 시간: " + Todaywork_Hour + "시간" + Todaywork_Minutes + "분");
+                                                }
+                                            }
+                                            //근무시간 10시간 초과시 진동알람
+                                            if (Integer.parseInt(Todaywork_Hour) >= 10) {
+                                                Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                                                v.vibrate(new long[]{500, 1000, 500, 2000}, -1);
+                                                Toast.makeText(getActivity(), "근무시간이 10시간을 초과하였습니다.", Toast.LENGTH_SHORT).show();
+                                            }
+                                            //익일 퇴근 체크
+                                            if ((0 <= mintParam1) && (mintParam1 <= 3) && (0 <= mintParam2) && (mintParam2 <= 3)) {
 
-                                                    if (value3 == null) {
-                                                        Toast.makeText(getActivity(), "Value 1 null.", Toast.LENGTH_SHORT).show();
-                                                        mOnworkView.setText("오늘의 출근 시간: 없음");
-                                                        //mOnworkView.setText("오늘의 출근 시간:" + mParam1);
-                                                        //mDatabaseRef.child("Attendance").child(date).child(Name).setValue(account);
-                                                        mDatabaseRef.child("Attendance").child(date).child(Name).child("Time_work_start").setValue(currenttime);
-                                                        mDatabaseRef.child("Attendance").child(date).child(Name).child("work_start").setValue(Timedate);
-                                                    } else {
+                                                try {
+                                                    mDatabaseRef.child("Attendance").child(date).child(Name).child("work_end").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot datasnapshot4) {
+                                                            String value4 = datasnapshot4.getValue(String.class);
+                                                            String nextday = hour+24 + "시" + minute + "분";
+                                                            String nextdaycurrenttime = String.valueOf(hour*60+minute+1440);
 
-                                                        if ((5 <= mintParam1) && (mintParam1 <= 12) && (14 <= mintParam2)) {
-                                                            Todaywork_Hour = String.valueOf(Integer.parseInt(Todaywork_Hour) - 1);
-                                                            mOnworkView.setText("오늘의 출근 시간: " + mParam1);
-                                                            mTodayworkView.setText("오늘의 근무 시간: " + Todaywork_Hour + "시간" + Todaywork_Minutes + "분");
-                                                        } else {
-                                                            mOnworkView.setText("오늘의 출근 시간: " + mParam1);
-                                                            mTodayworkView.setText("오늘의 근무 시간: " + Todaywork_Hour + "시간" + Todaywork_Minutes + "분");
+                                                            mDatabaseRef.child("Attendance").child(YesterdayDate).child(Name).child("work_end").setValue(nextday);
+                                                            mDatabaseRef.child("Attendance").child(YesterdayDate).child(Name).child("Time_work_end").setValue(nextdaycurrenttime);
+                                                            Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                                                            v.vibrate(new long[]{500, 1000, 500, 2000}, -1);
+                                                            mOnworkView.setText("오늘의 출근 시간: 어제 출근");
+                                                            mOffworkView.setText("마지막 근무 시간: "+Timedate);
+                                                            Toast.makeText(getActivity(), "익일 퇴근으로 처리합니다.", Toast.LENGTH_SHORT).show();
+                                                            mDatabaseRef.child("Attendance").child(date).child(Name).removeValue();
                                                         }
-                                                    }
-                                                    //근무시간 10시간 초과시 진동알람
-                                                    if (Integer.parseInt(Todaywork_Hour) >= 10) {
-                                                        Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-                                                        v.vibrate(new long[]{500, 1000, 500, 2000}, -1);
-                                                        Toast.makeText(getActivity(), "근무시간이 10시간을 초과하였습니다.", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                    //익일 퇴근 체크
-                                                    if ((0 <= mintParam1) && (mintParam1 <= 3) && (0 <= mintParam2) && (mintParam2 <= 3)) {
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {
 
-
-                                                        Todaywork_Hour = String.valueOf(Integer.parseInt(Todaywork_Hour) - 1);
-                                                        mOnworkView.setText("오늘의 출근 시간: " + mParam1);
-                                                        mTodayworkView.setText("오늘의 근무 시간: " + Todaywork_Hour + "시간" + Todaywork_Minutes + "분");
-                                                    } else {
-
-                                                    }
+                                                        }
+                                                    });
+                                                }catch (Exception e) {
                                                 }
 
-
                                             }
+                                        }
 
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
 
-                                            }
-                                        });
-                                    } catch (NullPointerException e) {
-                                        Toast.makeText(getActivity(), "데이터 불러오기 실패.", Toast.LENGTH_SHORT).show();
-                                    }
+                                        }
+                                    });
+
 
                                 }
                                 @Override
@@ -308,8 +318,6 @@ public class HomeFragment extends Fragment {
 
                                 }
                             });
-
-
 
                         }
 

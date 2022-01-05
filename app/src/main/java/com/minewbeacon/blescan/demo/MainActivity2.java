@@ -6,10 +6,12 @@ package com.minewbeacon.blescan.demo;
 
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +50,8 @@ import java.util.List;
 
 public class MainActivity2 extends AppCompatActivity {
 
+    ProgressDialog dialog;
+
     private static final int REQUEST_ACCESS_FINE_LOCATION = 1000;
     private boolean isScanning;
     private static final int REQUEST_ENABLE_BT = 2;
@@ -71,6 +76,11 @@ public class MainActivity2 extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
         //MA.finish();
         //Toast.makeText(MainActivity2.this, "블루젠트 이동", Toast.LENGTH_SHORT).show();
+
+        ProgressBar progressBar = findViewById(R.id.progressBar);
+        progressBar.setIndeterminate(true);
+        //progressBar.setProgress(80);
+
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("bluzent");
@@ -125,7 +135,7 @@ public class MainActivity2 extends AppCompatActivity {
         BluetoothState bluetoothState = mMinewBeaconManager.checkBluetoothState();
         switch (bluetoothState) {
             case BluetoothStateNotSupported:
-                Toast.makeText(this, "Not Support BLE", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "BLE를 지원하지않습니다.", Toast.LENGTH_SHORT).show();
                 finish();
                 break;
             case BluetoothStatePowerOff:
@@ -158,7 +168,7 @@ public class MainActivity2 extends AppCompatActivity {
             Log.e("Click2", "");
             switch (bluetoothState) {
                 case BluetoothStateNotSupported:
-                    Toast.makeText(MainActivity2.this, "Not Support BLE", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity2.this, "BLE를 지원하지않습니다.", Toast.LENGTH_SHORT).show();
                     finish();
                     break;
                 case BluetoothStatePowerOff:
@@ -217,6 +227,11 @@ public class MainActivity2 extends AppCompatActivity {
                         Log.e("스테이트 상태", state + "");
 
                         for (MinewBeacon minewBeacon : minewBeacons) {
+                            dialog = new ProgressDialog(MainActivity2.this);
+                            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            dialog.setMessage("로그인 정보를 확인하는 중입니다.");
+                            dialog.show();
+
                             String deviceName = minewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_Name).getStringValue();
                             //String deviceName = "luzent";
                             //Toast.makeText(getApplicationContext(), deviceName + " 발견", Toast.LENGTH_SHORT).show();
@@ -228,7 +243,7 @@ public class MainActivity2 extends AppCompatActivity {
                             Log.e("tag", String.valueOf(isScanning));
 
                             if(deviceName.equals(Name)){
-                                Toast.makeText(getApplicationContext(), "로그인 정보 체크중.", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getApplicationContext(), "로그인 정보 체크중.", Toast.LENGTH_SHORT).show();
                                 //로그인 정보 체크
                                 String strEmail = mEtEmail.getText().toString();
                                 String strPwd = mEtPwd.getText().toString();
@@ -239,6 +254,7 @@ public class MainActivity2 extends AppCompatActivity {
                                             if (task.isSuccessful()) {
                                                 // 로그인 성공
                                                 Toast.makeText(MainActivity2.this, "로그인 성공", Toast.LENGTH_SHORT).show();
+                                                dialog.dismiss();
 
                                                 String strEmail = mEtEmail.getText().toString();
                                                 String strPwd = mEtPwd.getText().toString();
@@ -246,12 +262,10 @@ public class MainActivity2 extends AppCompatActivity {
                                                 CheckBox Autologin = findViewById(R.id.autoLogin);
                                                 boolean checked = Autologin.isChecked();
                                                 if (checked) {
-                                                    Toast.makeText(getApplicationContext(), String.valueOf(checked), Toast.LENGTH_SHORT).show();
                                                     PreferenceManager.setString(mContext, "ID", strEmail);
                                                     PreferenceManager.setString(mContext, "PW", strPwd);
                                                     PreferenceManager.setBoolean(mContext, "checked", true);
                                                 } else {
-                                                    Toast.makeText(getApplicationContext(), String.valueOf(checked), Toast.LENGTH_SHORT).show();
                                                     PreferenceManager.setString(mContext, "ID", "");
                                                     PreferenceManager.setString(mContext, "PW", "");
                                                     PreferenceManager.setBoolean(mContext, "checked", false);
@@ -280,7 +294,6 @@ public class MainActivity2 extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(), "비컨 신호를 인식하지 못했습니다.", Toast.LENGTH_SHORT).show();
                                 //Toast.makeText(MainActivity2.this, "블루젠트 비콘 신호 미감지", Toast.LENGTH_SHORT).show();
                                 mMinewBeaconManager.stopScan();
-
                             }
                         }
                         if (state == 1 || state == 2) {
@@ -317,7 +330,6 @@ public class MainActivity2 extends AppCompatActivity {
 
         String strEmail = mEtEmail.getText().toString();
         String strPwd = mEtPwd.getText().toString();
-
 
         CheckBox Autologin = findViewById(R.id.autoLogin);
         Autologin.setOnClickListener(new View.OnClickListener() {

@@ -80,5 +80,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:layout_editor_absoluteY="667dp" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        tools:layout_editor_absoluteX="170dp"
+        tools:layout_editor_absoluteY="337dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

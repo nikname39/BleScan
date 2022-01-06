@@ -10,8 +10,11 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" android:maxSdkVersion="29" />
+    <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
 
+    <uses-permission android:name="READ_PHONE_STATE"/>
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -22,8 +25,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="스마트솔루션"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+
+
         <activity
             android:name="com.minewbeacon.blescan.demo.attendance"
             android:exported="false" />

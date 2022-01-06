@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 
@@ -76,6 +77,9 @@ public class MainActivity2 extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
         //MA.finish();
         //Toast.makeText(MainActivity2.this, "블루젠트 이동", Toast.LENGTH_SHORT).show();
+
+        String androidId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+        Toast.makeText(this, androidId, Toast.LENGTH_SHORT).show();
 
         ProgressBar progressBar = findViewById(R.id.progressBar);
         progressBar.setIndeterminate(true);
@@ -207,10 +211,16 @@ public class MainActivity2 extends AppCompatActivity {
              */
             @Override
             public void onDisappearBeacons(List<MinewBeacon> minewBeacons) {
+                    Toast.makeText(getApplicationContext(),   "비콘 신호가 끊어졌습니다.", Toast.LENGTH_SHORT).show();
+                    onDestroy();
+
+
                 /*for (MinewBeacon minewBeacon : minewBeacons) {
                     String deviceName = minewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_Name).getStringValue();
                     Toast.makeText(getApplicationContext(), deviceName + "  out range", Toast.LENGTH_SHORT).show();
                 }*/
+
+
             }
 
             /**

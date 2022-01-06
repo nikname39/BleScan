@@ -1,7 +1,8 @@
 /**
- * bluetooth susin
+ * bluetooth susin 현재 안씀
  * by jh
  */
+
 package com.minewbeacon.blescan.demo;
 
 import android.Manifest;

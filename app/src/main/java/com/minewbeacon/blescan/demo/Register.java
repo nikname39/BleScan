@@ -2,6 +2,7 @@ package com.minewbeacon.blescan.demo;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,6 +33,7 @@ public class Register extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        String androidId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("bluzent");
@@ -63,6 +65,7 @@ public class Register extends AppCompatActivity {
                                 account.setEmailId(firebaseUser.getEmail());
                                 account.setPassword(strPwd);
                                 account.setName(strName);
+                                account.setAndroid_Id(androidId);
                                 //account.setName(firebaseUser.getDisplayName());
 
                                 mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).setValue(account);
@@ -74,7 +77,6 @@ public class Register extends AppCompatActivity {
                             }else {
                                 Toast.makeText(Register.this, "회원가입 실패", Toast.LENGTH_SHORT).show();
                             }
-
                         }
                     });
                 } catch (Exception e) {

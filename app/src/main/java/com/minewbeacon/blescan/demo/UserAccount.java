@@ -13,6 +13,7 @@ public class UserAccount
     private String work_end;
     private String time_work_start;
     private String time_work_end;
+    private String android_Id;
 
     public UserAccount() {}
 
@@ -35,9 +36,12 @@ public class UserAccount
     public void setWork_end(String work_end) { this.work_end = work_end;}
 
     public  String getTime_work_start() { return time_work_start;}
-    public void setTime_work_start(String Time_work_start) { this.time_work_start = time_work_start;}
+    public void setTime_work_start(String time_work_start) { this.time_work_start = time_work_start;}
 
     public  String getTime_work_end() { return time_work_end;}
-    public void setTime_work_end(String Time_work_end) { this.time_work_end = time_work_end;}
+    public void setTime_work_end(String time_work_end) { this.time_work_end = time_work_end;}
+
+    public  String getAndroid_Id() { return android_Id;}
+    public void setAndroid_Id(String android_Id) { this.android_Id = android_Id;}
 
 }

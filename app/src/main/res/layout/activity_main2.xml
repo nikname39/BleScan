@@ -9,7 +9,7 @@
     tools:context="com.minewbeacon.blescan.demo.MainActivity2">
 
 
-
+<!--
     <EditText
         android:id="@+id/Lg_email"
         android:layout_width="wrap_content"
@@ -35,50 +35,51 @@
         android:hint="비밀번호 입력하세요"
         android:inputType="textPassword"
         android:text=""
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+        -->
+
     <CheckBox
         android:id="@+id/autoLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/Lg_pwd"
+        android:layout_below="@+id/userName"
         android:layout_centerHorizontal="true"
         android:text="자동 로그인"
         android:onClick="myListener2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Lg_pwd" />
+        app:layout_constraintTop_toBottomOf="@+id/userName" />
 
     <Button
         android:id="@+id/btn_login"
         android:layout_width="167dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/rectangle_2"
         android:onClick="myListener"
         android:text="로그인"
-        android:layout_marginBottom="30dp"
         android:textColor="#ffffff"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="667dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btn_register"
         android:layout_width="167dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/rectangle_2"
         android:onClick="myListener3"
 
         android:text="회원가입"
-        android:layout_marginBottom="30dp"
         android:textColor="#ffffff"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteY="667dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -88,6 +89,26 @@
         android:visibility="invisible"
         tools:layout_editor_absoluteX="170dp"
         tools:layout_editor_absoluteY="337dp" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="300dp"
+        android:text="이용자 정보"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/userName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="350dp"
+        android:text="없음"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

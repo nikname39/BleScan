@@ -36,8 +36,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.minew.beacon.BeaconValueIndex;
 import com.minew.beacon.BluetoothState;
 import com.minew.beacon.MinewBeacon;
@@ -62,10 +66,13 @@ public class MainActivity2 extends AppCompatActivity {
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabaseRef;
     private EditText mEtEmail, mEtPwd;
+    private TextView mUserName;
     private Context mContext;
     private CheckBox mCheckbox;
     private Button mLogin, mRegister;
     private int state;
+
+
 
 
     private MinewBeaconManager mMinewBeaconManager;
@@ -77,9 +84,10 @@ public class MainActivity2 extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
         //MA.finish();
         //Toast.makeText(MainActivity2.this, "블루젠트 이동", Toast.LENGTH_SHORT).show();
-
         String androidId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-        Toast.makeText(this, androidId, Toast.LENGTH_SHORT).show();
+
+
+
 
         ProgressBar progressBar = findViewById(R.id.progressBar);
         progressBar.setIndeterminate(true);
@@ -89,28 +97,19 @@ public class MainActivity2 extends AppCompatActivity {
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("bluzent");
 
-        mEtEmail = findViewById(R.id.Lg_email);
-        mEtPwd = findViewById(R.id.Lg_pwd);
+        //mEtEmail = findViewById(R.id.Lg_email);
+        //mEtPwd = findViewById(R.id.Lg_pwd);
         mCheckbox = findViewById(R.id.autoLogin);
         mContext = this;
+        mUserName = findViewById(R.id.userName);
 
-        // 자동로그인 확인
-        boolean check = PreferenceManager.getBoolean(mContext, "checked");
-
-        if (String.valueOf(check).equals("true")) {
-            mCheckbox.setChecked(true);
-            mEtEmail.setText(PreferenceManager.getString(mContext, "ID"));
-            mEtPwd.setText(PreferenceManager.getString(mContext, "PW"));
-        } else {
-            mCheckbox.setChecked(false);
-            mEtEmail.setText("");
-            mEtPwd.setText("");
-        }
 
         //블루투스, 위치권한 체크
         mMinewBeaconManager = MinewBeaconManager.getInstance(this);
         checkBluetooth();
         checkLocationPermition();
+        checkSSAID();
+        checkAutologin();
 
     }
 
@@ -155,10 +154,71 @@ public class MainActivity2 extends AppCompatActivity {
         Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
     }
 
+    // SSAID 정보 가져오기
+    /**
+     * check SSAID state
+     */
+    private void checkSSAID() {
+
+        String androidId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("bluzent");
+
+        FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
+
+        UserAccount account = new UserAccount();  //VO
+        account.setIdToken(firebaseUser.getUid());
+        account.setEmailId(firebaseUser.getEmail());
+        account.setAndroid_Id(androidId);
+
+        mDatabaseRef.child("UserAccount").child(androidId).child("name").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot datasnapshot1) {
+                String value1 = datasnapshot1.getValue(String.class);
+
+                if (value1 == null) {
+                    Toast.makeText(MainActivity2.this, "가입 정보가 없습니다. 회원가입 바랍니다.", Toast.LENGTH_SHORT).show();
+                    PreferenceManager.setBoolean(mContext, "checked", false);
+
+                } else {
+                    Toast.makeText(MainActivity2.this, "SSAID 불러오기 성공", Toast.LENGTH_SHORT).show();
+                    mUserName.setText(value1);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    //자동로그인 설정
+    private  void checkAutologin() {
+        //자동로그인 확인
+
+        Boolean check = PreferenceManager.getBoolean(mContext, "checked");
+        if (check == null) {
+            PreferenceManager.setBoolean(mContext, "checked", false);
+        } else {
+            if (String.valueOf(check).equals("true")) {
+                mCheckbox.setChecked(true);
+                Button mLogin = (Button) findViewById(R.id.btn_login);
+                mLogin.callOnClick();
+
+            } else {
+                mCheckbox.setChecked(false);
+            }
+        }
+
+    }
+
+
 
 
     //로그인 버튼
     public void myListener(View target) {
+        String androidId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
 //        Toast.makeText(getApplicationContext(), "스캔1.", Toast.LENGTH_SHORT).show();
 //        Button mLogin = (Button) findViewById(R.id.btn_login);
@@ -235,12 +295,13 @@ public class MainActivity2 extends AppCompatActivity {
                     public void run() {
                         Collections.sort(minewBeacons, comp);
                         Log.e("스테이트 상태", state + "");
+                        dialog = new ProgressDialog(MainActivity2.this);
+                        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                        dialog.setMessage("비콘 신호를 확인하는 중입니다.");
+                        dialog.show();
 
                         for (MinewBeacon minewBeacon : minewBeacons) {
-                            dialog = new ProgressDialog(MainActivity2.this);
-                            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                            dialog.setMessage("로그인 정보를 확인하는 중입니다.");
-                            dialog.show();
+
 
                             String deviceName = minewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_Name).getStringValue();
                             //String deviceName = "luzent";
@@ -255,41 +316,56 @@ public class MainActivity2 extends AppCompatActivity {
                             if(deviceName.equals(Name)){
                                 //Toast.makeText(getApplicationContext(), "로그인 정보 체크중.", Toast.LENGTH_SHORT).show();
                                 //로그인 정보 체크
-                                String strEmail = mEtEmail.getText().toString();
-                                String strPwd = mEtPwd.getText().toString();
+                                dialog.setMessage("로그인 정보를 확인하는 중입니다.");
+
                                 try {
-                                    mFirebaseAuth.signInWithEmailAndPassword(strEmail, strPwd).addOnCompleteListener(MainActivity2.this, new OnCompleteListener<AuthResult>() {
+                                    mFirebaseAuth = FirebaseAuth.getInstance();
+                                    mDatabaseRef = FirebaseDatabase.getInstance().getReference("bluzent");
+
+                                    FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
+
+                                    UserAccount account = new UserAccount();  //VO
+                                    account.setIdToken(firebaseUser.getUid());
+                                    account.setEmailId(firebaseUser.getEmail());
+                                    account.setAndroid_Id(androidId);
+
+                                    mDatabaseRef.child("UserAccount").child(androidId).child("android_Id").addValueEventListener(new ValueEventListener() {
                                         @Override
-                                        public void onComplete(@NonNull Task<AuthResult> task) {
-                                            if (task.isSuccessful()) {
-                                                // 로그인 성공
-                                                Toast.makeText(MainActivity2.this, "로그인 성공", Toast.LENGTH_SHORT).show();
-                                                dialog.dismiss();
+                                        public void onDataChange(@NonNull DataSnapshot datasnapshot1) {
+                                            String value1 = datasnapshot1.getValue(String.class);
 
-                                                String strEmail = mEtEmail.getText().toString();
-                                                String strPwd = mEtPwd.getText().toString();
-
-                                                CheckBox Autologin = findViewById(R.id.autoLogin);
-                                                boolean checked = Autologin.isChecked();
-                                                if (checked) {
-                                                    PreferenceManager.setString(mContext, "ID", strEmail);
-                                                    PreferenceManager.setString(mContext, "PW", strPwd);
-                                                    PreferenceManager.setBoolean(mContext, "checked", true);
-                                                } else {
-                                                    PreferenceManager.setString(mContext, "ID", "");
-                                                    PreferenceManager.setString(mContext, "PW", "");
-                                                    PreferenceManager.setBoolean(mContext, "checked", false);
-                                                }
+                                            if (value1 == null){
+                                                PreferenceManager.setBoolean(mContext, "checked", false);
+                                                Toast.makeText(getApplicationContext(), "회원가입 바랍니다.", Toast.LENGTH_SHORT).show();
                                                 mMinewBeaconManager.stopScan();
-                                                Intent intent = new Intent(getApplicationContext(), attendance.class);
-                                                startActivity(intent);
-                                                finish();
+                                                ActivityCompat.finishAffinity(MainActivity2.this);
                                             } else {
-                                                Toast.makeText(MainActivity2.this, "로그인 실패", Toast.LENGTH_SHORT).show();
-                                                mMinewBeaconManager.stopScan();
+                                                if (value1.equals(androidId)) {
+                                                    // 로그인 성공
+                                                    Toast.makeText(MainActivity2.this, "로그인 성공", Toast.LENGTH_SHORT).show();
+                                                    dialog.dismiss();
+
+                                                    CheckBox Autologin = findViewById(R.id.autoLogin);
+
+                                                    mMinewBeaconManager.stopScan();
+                                                    Intent intent = new Intent(getApplicationContext(), attendance.class);
+                                                    startActivity(intent);
+                                                    finish();
+
+                                                } else {
+                                                    Toast.makeText(getApplicationContext(), "정보를 입력해주세요.", Toast.LENGTH_SHORT).show();
+                                                    mMinewBeaconManager.stopScan();
+                                                }
                                             }
+
+                                        }
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
                                         }
                                     });
+
+
                                 } catch (Exception e) {
                                     Toast.makeText(getApplicationContext(), "정보를 입력해주세요.", Toast.LENGTH_SHORT).show();
                                     mMinewBeaconManager.stopScan();
@@ -338,33 +414,19 @@ public class MainActivity2 extends AppCompatActivity {
     //회원가입 버튼
     public void myListener2(View target) {
 
-        String strEmail = mEtEmail.getText().toString();
-        String strPwd = mEtPwd.getText().toString();
-
         CheckBox Autologin = findViewById(R.id.autoLogin);
-        Autologin.setOnClickListener(new View.OnClickListener() {
+        Boolean checked = ((CheckBox) target).isChecked();
 
-            @Override
-            public void onClick(View view) {
-                boolean checked = ((CheckBox) view).isChecked();
+        if (checked) {
+            Toast.makeText(getApplicationContext(), "자동로그인이 설정되었습니다.", Toast.LENGTH_SHORT).show();
+            PreferenceManager.setBoolean(mContext, "checked", true);
 
-                if (checked) {
-                    Toast.makeText(getApplicationContext(), String.valueOf(checked), Toast.LENGTH_SHORT).show();
-                    PreferenceManager.setString(mContext, "ID", strEmail);
-                    PreferenceManager.setString(mContext, "PW", strPwd);
-                    PreferenceManager.setBoolean(mContext, "checked", true);
-
-                } else {
-                    Toast.makeText(getApplicationContext(), String.valueOf(checked), Toast.LENGTH_SHORT).show();
-                    PreferenceManager.setString(mContext, "ID", "");
-                    PreferenceManager.setString(mContext, "PW", "");
-                    PreferenceManager.setBoolean(mContext, "checked", false);
-                }
-            }
-
-        });
-
+        } else {
+            Toast.makeText(getApplicationContext(), "자동로그인이 해제되었습니다.", Toast.LENGTH_SHORT).show();
+            PreferenceManager.setBoolean(mContext, "checked", false);
+        }
     }
+
 
     public void myListener3(View target) {
         Intent intent = new Intent(getApplicationContext(), Register.class);
@@ -380,6 +442,7 @@ public class MainActivity2 extends AppCompatActivity {
             mMinewBeaconManager.stopScan();
         }
     }
+
 
 
 

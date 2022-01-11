@@ -208,6 +208,7 @@ public class PreferenceManager {
 
         SharedPreferences prefs = getPreferences(context);
 
+
         boolean value = prefs.getBoolean(key, DEFAULT_VALUE_BOOLEAN);
 
         return value;

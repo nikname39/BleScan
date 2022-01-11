@@ -19,28 +19,40 @@
             android:layout_gravity="center"
             android:text="출근" />
 
-        <TextView
-            android:id="@+id/OnworkView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="오늘의 출근 시간: " />
-
         <Button
             android:id="@+id/OffWork"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="퇴근" />
+
+        <TextView
+            android:id="@+id/OnworkView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="오늘의 출근 시간: " />
+
         <TextView
             android:id="@+id/OffworkView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="오늘의 퇴근 시간: " />
         <TextView
             android:id="@+id/TodayworkView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="오늘의 근무 시간: " />
+        <CheckBox
+            android:id="@+id/autoLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_below="@+id/userName"
+            android:layout_centerHorizontal="true"
+            android:text="자동 로그인"/>
     </LinearLayout>
 
     <TextView

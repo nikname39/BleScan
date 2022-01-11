@@ -6,6 +6,10 @@ package com.minewbeacon.blescan.demo;
 
 
 import android.Manifest;
+import android.app.Fragment;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
@@ -30,6 +34,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -60,6 +65,9 @@ public class MainActivity2 extends AppCompatActivity {
     private static final int REQUEST_ACCESS_FINE_LOCATION = 1000;
     private boolean isScanning;
     private static final int REQUEST_ENABLE_BT = 2;
+    public static Context mContext;
+    public static Boolean check;
+    private final String DEFAULT = "DEFAULT";
 
     UserRssi comp = new UserRssi();
 
@@ -67,7 +75,6 @@ public class MainActivity2 extends AppCompatActivity {
     private DatabaseReference mDatabaseRef;
     private EditText mEtEmail, mEtPwd;
     private TextView mUserName;
-    private Context mContext;
     private CheckBox mCheckbox;
     private Button mLogin, mRegister;
     private int state;
@@ -86,9 +93,6 @@ public class MainActivity2 extends AppCompatActivity {
         //Toast.makeText(MainActivity2.this, "블루젠트 이동", Toast.LENGTH_SHORT).show();
         String androidId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
-
-
-
         ProgressBar progressBar = findViewById(R.id.progressBar);
         progressBar.setIndeterminate(true);
         //progressBar.setProgress(80);
@@ -104,12 +108,15 @@ public class MainActivity2 extends AppCompatActivity {
         mUserName = findViewById(R.id.userName);
 
 
+
+
         //블루투스, 위치권한 체크
         mMinewBeaconManager = MinewBeaconManager.getInstance(this);
         checkBluetooth();
         checkLocationPermition();
         checkSSAID();
         checkAutologin();
+
 
     }
 
@@ -203,15 +210,19 @@ public class MainActivity2 extends AppCompatActivity {
         } else {
             if (String.valueOf(check).equals("true")) {
                 mCheckbox.setChecked(true);
+                PreferenceManager.setBoolean(mContext, "checked", true);
                 Button mLogin = (Button) findViewById(R.id.btn_login);
                 mLogin.callOnClick();
 
             } else {
                 mCheckbox.setChecked(false);
+                PreferenceManager.setBoolean(mContext, "checked", false);
             }
         }
 
     }
+
+
 
 
 
@@ -261,7 +272,7 @@ public class MainActivity2 extends AppCompatActivity {
              */
             @Override
             public void onAppearBeacons(List<MinewBeacon> minewBeacons) {
-
+                Toast.makeText(getApplicationContext(),   "새로운 비콘 신호가 탐지되었습니다.", Toast.LENGTH_SHORT).show();
             }
 
             /**
@@ -349,6 +360,7 @@ public class MainActivity2 extends AppCompatActivity {
 
                                                     mMinewBeaconManager.stopScan();
                                                     Intent intent = new Intent(getApplicationContext(), attendance.class);
+
                                                     startActivity(intent);
                                                     finish();
 
@@ -387,8 +399,14 @@ public class MainActivity2 extends AppCompatActivity {
 
                         }
 
+//                        try {
+//                            Thread.sleep(5000);
+//                        } catch (Exception e) {
+//                            e.printStackTrace() ;
+//                        }
                     }
                 });
+
             }
 
             /**
@@ -411,7 +429,7 @@ public class MainActivity2 extends AppCompatActivity {
 
     }
 
-    //회원가입 버튼
+    //자동로그인 버튼
     public void myListener2(View target) {
 
         CheckBox Autologin = findViewById(R.id.autoLogin);
@@ -427,7 +445,7 @@ public class MainActivity2 extends AppCompatActivity {
         }
     }
 
-
+    //회원가입 버튼
     public void myListener3(View target) {
         Intent intent = new Intent(getApplicationContext(), Register.class);
         startActivity(intent);

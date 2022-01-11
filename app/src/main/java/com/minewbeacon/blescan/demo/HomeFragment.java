@@ -4,18 +4,32 @@
  */
 package com.minewbeacon.blescan.demo;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
+
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
 import android.os.Vibrator;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +63,7 @@ public class HomeFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private final String DEFAULT = "DEFAULT";
 
     // TODO: Rename and change types of parameters
     private String mParam1= "00시00분";
@@ -61,12 +76,44 @@ public class HomeFragment extends Fragment {
     private Button mBtnOffWork;
     private String Name = "";
     private String Work = "";
+    private Context mContext;
+    private CheckBox mCheckbox;
+
 
     final Handler handler = new Handler();
 
 
+
     public HomeFragment() {
         // Required empty public constructor
+    }
+
+    void createNotificationChannel(String channelId, String channelName, int importance)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(new NotificationChannel(channelId, channelName, importance));
+        }
+    }
+
+    void createNotification(String channelId, int id, String title, String text)
+    {
+        Drawable drawable= ContextCompat.getDrawable(mContext,R.drawable.bgs);
+        Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, channelId)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)          // Head Up Display를 위해 PRIORITY_HIGH 설정
+                .setSmallIcon(R.drawable.bgs)        // 알림시 보여지는 아이콘. 반드시 필요
+                .setContentTitle(title)
+                .setContentText(text)
+                .setLargeIcon(bitmap)
+                //.setTimeoutAfter(1000)    // 지정한 시간 이후 알림 삭제
+                //.setStyle(new NotificationCompat.BigTextStyle().bigText(text))          // 한줄 이상의 텍스트를 모두 보여주고 싶을때 사용
+                .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);  // 알림시 효과음, 진동 여부
+
+        NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(id, builder.build());
     }
 
     /**
@@ -87,6 +134,7 @@ public class HomeFragment extends Fragment {
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +143,8 @@ public class HomeFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
 
         }
+
+        mContext = ((MainActivity2)MainActivity2.mContext);
     }
 
     @Override
@@ -102,6 +152,26 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_home, container, false);
+
+        //자동로그인 정보 불러오기
+        CheckBox Autologin = v.findViewById(R.id.autoLogin);
+
+        Boolean check = PreferenceManager.getBoolean(mContext, "checked");
+        mCheckbox = v.findViewById(R.id.autoLogin);
+
+        if (check == null) {
+            PreferenceManager.setBoolean(mContext, "checked", false);
+        } else {
+            if (String.valueOf(check).equals("true")) {
+                mCheckbox.setChecked(true);
+            } else {
+                mCheckbox.setChecked(false);
+            }
+        }
+
+
+
+        String androidId = Settings.Secure.getString(this.getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
         //.. DAte
         mDisplayDate = (TextView) v.findViewById(R.id.tvDate);
         mOnworkView = (TextView) v.findViewById(R.id.OnworkView);
@@ -240,7 +310,8 @@ public class HomeFragment extends Fragment {
                         account.setTime_work_start(currenttime);
                         account.setTime_work_end(currenttime);
 
-                        mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
+
+                        mDatabaseRef.child("UserAccount").child(androidId).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 String value = dataSnapshot.getValue(String.class);
@@ -259,6 +330,7 @@ public class HomeFragment extends Fragment {
                                             //mDatabaseRef.child("Attendance").child(date).child(Name).setValue(account);
                                             mDatabaseRef.child("Attendance").child(date).child(Name).child("Time_work_start").setValue(currenttime);
                                             mDatabaseRef.child("Attendance").child(date).child(Name).child("work_start").setValue(Timedate);
+                                            mDatabaseRef.child("Attendance").child(date).child(Name).child("android_Id").setValue(androidId);
                                             mParam1 = Timedate;
                                         } else {
                                             mOnworkView.setText("오늘의 출근 시간: "+mParam1);
@@ -282,6 +354,7 @@ public class HomeFragment extends Fragment {
                                             //mDatabaseRef.child("Attendance").child(date).child(Name).setValue(account);
                                             mDatabaseRef.child("Attendance").child(date).child(Name).child("Time_work_end").setValue(currenttime);
                                             mDatabaseRef.child("Attendance").child(date).child(Name).child("work_end").setValue(Timedate);
+                                            mDatabaseRef.child("Attendance").child(date).child(Name).child("android_Id").setValue(androidId);
                                             mOffworkView.setText("마지막 근무 시간: 없음");
                                             mParam2 = Timedate;
 
@@ -289,6 +362,7 @@ public class HomeFragment extends Fragment {
                                             //mDatabaseRef.child("Attendance").child(date).child(Name).setValue(account);
                                             mDatabaseRef.child("Attendance").child(date).child(Name).child("Time_work_end").setValue(currenttime);
                                             mDatabaseRef.child("Attendance").child(date).child(Name).child("work_end").setValue(Timedate);
+                                            mDatabaseRef.child("Attendance").child(date).child(Name).child("android_Id").setValue(androidId);
                                             mOffworkView.setText("마지막 근무 시간: "+Timedate);
                                         }
 
@@ -324,6 +398,8 @@ public class HomeFragment extends Fragment {
                                                 if (Integer.parseInt(Todaywork_Hour) >= 10) {
                                                     Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
                                                     v.vibrate(new long[]{500, 1000, 500, 2000}, -1);
+                                                    createNotificationChannel(DEFAULT, "default channel", NotificationManager.IMPORTANCE_HIGH);
+                                                    createNotification(DEFAULT, 1, "알림", "근무시간이 10시간을 초과하였습니다.");
                                                     Toast.makeText(getActivity(), "근무시간이 10시간을 초과하였습니다.", Toast.LENGTH_SHORT).show();
                                                 }
                                                 //익일 퇴근 체크
@@ -512,6 +588,43 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(getActivity(), "퇴근 성공", Toast.LENGTH_SHORT).show();
             }
         });
+
+
+
+        //자동로그인 동작
+        Autologin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Boolean checked = ((CheckBox) Autologin).isChecked();
+
+                if (checked) {
+                    Toast.makeText(getActivity().getApplicationContext(), "자동로그인이 설정되었습니다.", Toast.LENGTH_SHORT).show();
+                    PreferenceManager.setBoolean(mContext, "checked", true);
+
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(), "자동로그인이 해제되었습니다.", Toast.LENGTH_SHORT).show();
+                    PreferenceManager.setBoolean(mContext, "checked", false);
+                }
+
+
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

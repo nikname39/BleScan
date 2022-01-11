@@ -107,6 +107,8 @@ public class MainActivity2 extends AppCompatActivity {
         mContext = this;
         mUserName = findViewById(R.id.userName);
 
+        PreferenceManager.setBoolean(mContext, "Overwork", false);
+
 
 
 
@@ -172,31 +174,35 @@ public class MainActivity2 extends AppCompatActivity {
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("bluzent");
 
         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
+        UserAccount account = new UserAccount();
 
-        UserAccount account = new UserAccount();  //VO
-        account.setIdToken(firebaseUser.getUid());
-        account.setEmailId(firebaseUser.getEmail());
-        account.setAndroid_Id(androidId);
+        if(firebaseUser != null) {
+            account.setIdToken(firebaseUser.getUid());
+            account.setEmailId(firebaseUser.getEmail());
+            account.setAndroid_Id(androidId);
 
-        mDatabaseRef.child("UserAccount").child(androidId).child("name").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot datasnapshot1) {
-                String value1 = datasnapshot1.getValue(String.class);
+            mDatabaseRef.child("UserAccount").child(androidId).child("name").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot datasnapshot1) {
+                    String value1 = datasnapshot1.getValue(String.class);
 
-                if (value1 == null) {
-                    Toast.makeText(MainActivity2.this, "가입 정보가 없습니다. 회원가입 바랍니다.", Toast.LENGTH_SHORT).show();
-                    PreferenceManager.setBoolean(mContext, "checked", false);
+                    if (value1 == null) {
+                        Toast.makeText(MainActivity2.this, "가입 정보가 없습니다. 회원가입 바랍니다.", Toast.LENGTH_SHORT).show();
+                        PreferenceManager.setBoolean(mContext, "checked", false);
 
-                } else {
-                    Toast.makeText(MainActivity2.this, "SSAID 불러오기 성공", Toast.LENGTH_SHORT).show();
-                    mUserName.setText(value1);
+                    } else {
+                        Toast.makeText(MainActivity2.this, "SSAID 불러오기 성공", Toast.LENGTH_SHORT).show();
+                        mUserName.setText(value1);
+                    }
                 }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });//Do what you need to do with the id
+        } else {
+            Toast.makeText(MainActivity2.this, "가입 정보가 없습니다. 회원가입 바랍니다.", Toast.LENGTH_SHORT).show();
+        }
 
     }
 

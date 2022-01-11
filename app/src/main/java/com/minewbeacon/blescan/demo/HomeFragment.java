@@ -6,10 +6,12 @@ package com.minewbeacon.blescan.demo;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -109,7 +111,7 @@ public class HomeFragment extends Fragment {
                 .setContentText(text)
                 .setLargeIcon(bitmap)
                 //.setTimeoutAfter(1000)    // 지정한 시간 이후 알림 삭제
-                //.setStyle(new NotificationCompat.BigTextStyle().bigText(text))          // 한줄 이상의 텍스트를 모두 보여주고 싶을때 사용
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(text))          // 한줄 이상의 텍스트를 모두 보여주고 싶을때 사용
                 .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);  // 알림시 효과음, 진동 여부
 
         NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(NOTIFICATION_SERVICE);
@@ -227,6 +229,11 @@ public class HomeFragment extends Fragment {
         //mDisplayDate.setText(date+" "+dayString+"요일");
         mDisplayDate.setText(date);
 
+
+
+
+
+
         //출퇴근 시간 가져오기
 
 
@@ -252,6 +259,8 @@ public class HomeFragment extends Fragment {
                 public void run()
                 {
                     if(true){
+
+
 
                         //전날 시간 구하기
                         Calendar cal = Calendar.getInstance();
@@ -309,6 +318,9 @@ public class HomeFragment extends Fragment {
                         account.setWork_end(Timedate);
                         account.setTime_work_start(currenttime);
                         account.setTime_work_end(currenttime);
+
+
+
 
 
                         mDatabaseRef.child("UserAccount").child(androidId).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -396,11 +408,27 @@ public class HomeFragment extends Fragment {
                                                 }
                                                 //근무시간 10시간 초과시 진동알람
                                                 if (Integer.parseInt(Todaywork_Hour) >= 10) {
-                                                    Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-                                                    v.vibrate(new long[]{500, 1000, 500, 2000}, -1);
-                                                    createNotificationChannel(DEFAULT, "default channel", NotificationManager.IMPORTANCE_HIGH);
-                                                    createNotification(DEFAULT, 1, "알림", "근무시간이 10시간을 초과하였습니다.");
-                                                    Toast.makeText(getActivity(), "근무시간이 10시간을 초과하였습니다.", Toast.LENGTH_SHORT).show();
+
+
+                                                    Boolean overwork = PreferenceManager.getBoolean(mContext, "Overwork");
+
+                                                    if (overwork == null) {
+                                                        PreferenceManager.setBoolean(mContext, "Overwork", false);
+                                                    } else {
+                                                        if (String.valueOf(overwork).equals("true")) {
+
+                                                        } else {
+                                                            PreferenceManager.setBoolean(mContext, "Overwork", true);
+                                                            Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                                                            v.vibrate(new long[]{500, 1000, 500, 2000}, -1);
+                                                            createNotificationChannel(DEFAULT, "default channel", NotificationManager.IMPORTANCE_HIGH);
+                                                            createNotification(DEFAULT, 2, "알림", "근무시간이 10시간을 초과하였습니다.");
+                                                            Toast.makeText(getActivity(), "근무시간이 10시간을 초과하였습니다.", Toast.LENGTH_SHORT).show();
+
+                                                        }
+                                                    }
+
+
                                                 }
                                                 //익일 퇴근 체크
                                                 if ((0 <= mintParam1) && (mintParam1 <= 3) && (0 <= mintParam2) && (mintParam2 <= 3)) {
@@ -464,6 +492,7 @@ public class HomeFragment extends Fragment {
         } catch (Exception e) {
             Toast.makeText(getActivity(), "데이터 불러오기 실패.", Toast.LENGTH_SHORT).show();
         }
+
 
 
 
@@ -588,6 +617,37 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(getActivity(), "퇴근 성공", Toast.LENGTH_SHORT).show();
             }
         });
+
+        //근무시간 10시간 초과시 진동알람
+//        if (Integer.parseInt(Todaywork_Hour) >= 10) {
+//            Vibrator vb = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+//            vb.vibrate(new long[]{500, 1000, 500, 2000}, -1);
+//            createNotificationChannel(DEFAULT, "default channel", NotificationManager.IMPORTANCE_HIGH);
+//            createNotification(DEFAULT, 1, "알림", "근무시간이 10시간을 초과하였습니다.");
+//            Toast.makeText(getActivity(), "근무시간이 10시간을 초과하였습니다.", Toast.LENGTH_SHORT).show();
+//        }
+
+        //공지사항 불러오기
+        mDatabaseRef.child("notices").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot datasnapshot1) {
+                String value1 = datasnapshot1.getValue(String.class);
+
+                if (value1 == null || value1.equals("")) {
+
+                } else {
+                    createNotificationChannel(DEFAULT, "default channel", NotificationManager.IMPORTANCE_HIGH);
+                    createNotification(DEFAULT, 1, "공지사항", value1);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
 
 
 

@@ -61,12 +61,12 @@ public class Register extends AppCompatActivity {
                     FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
 
                     UserAccount account = new UserAccount();  //VO
-                    account.setIdToken(firebaseUser.getUid());
-                    account.setEmailId(firebaseUser.getEmail());
+                    //account.setIdToken(firebaseUser.getUid());
+                    //account.setEmailId(firebaseUser.getEmail());
+                    account.setEmailId(strEmail);
                     //account.setPassword(strPwd);
                     account.setName(strName);
                     account.setAndroid_Id(androidId);
-
 
                     mDatabaseRef.child("UserAccount").child(androidId).child("android_Id").addValueEventListener(new ValueEventListener() {
                         @Override

@@ -109,9 +109,6 @@ public class MainActivity2 extends AppCompatActivity {
 
         PreferenceManager.setBoolean(mContext, "Overwork", false);
 
-
-
-
         //블루투스, 위치권한 체크
         mMinewBeaconManager = MinewBeaconManager.getInstance(this);
         checkBluetooth();
@@ -176,34 +173,30 @@ public class MainActivity2 extends AppCompatActivity {
         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
         UserAccount account = new UserAccount();
 
-        if(firebaseUser != null) {
-            account.setIdToken(firebaseUser.getUid());
-            account.setEmailId(firebaseUser.getEmail());
-            account.setAndroid_Id(androidId);
 
-            mDatabaseRef.child("UserAccount").child(androidId).child("name").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot datasnapshot1) {
-                    String value1 = datasnapshot1.getValue(String.class);
+        //account.setIdToken(firebaseUser.getUid());
+        //account.setEmailId(firebaseUser.getEmail());
+        account.setAndroid_Id(androidId);
 
-                    if (value1 == null) {
-                        Toast.makeText(MainActivity2.this, "가입 정보가 없습니다. 회원가입 바랍니다.", Toast.LENGTH_SHORT).show();
-                        PreferenceManager.setBoolean(mContext, "checked", false);
+        mDatabaseRef.child("UserAccount").child(androidId).child("name").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot datasnapshot1) {
+                String value1 = datasnapshot1.getValue(String.class);
 
-                    } else {
-                        Toast.makeText(MainActivity2.this, "SSAID 불러오기 성공", Toast.LENGTH_SHORT).show();
-                        mUserName.setText(value1);
-                    }
+                if (value1 == null) {
+                    Toast.makeText(MainActivity2.this, "가입 정보가 없습니다. 회원가입 바랍니다.", Toast.LENGTH_SHORT).show();
+                    PreferenceManager.setBoolean(mContext, "checked", false);
+
+                } else {
+                    Toast.makeText(MainActivity2.this, "SSAID 불러오기 성공", Toast.LENGTH_SHORT).show();
+                    mUserName.setText(value1);
                 }
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                }
-            });//Do what you need to do with the id
-        } else {
-            Toast.makeText(MainActivity2.this, "가입 정보가 없습니다. 회원가입 바랍니다.", Toast.LENGTH_SHORT).show();
-        }
-
+            }
+        });
     }
 
     //자동로그인 설정
@@ -225,13 +218,7 @@ public class MainActivity2 extends AppCompatActivity {
                 PreferenceManager.setBoolean(mContext, "checked", false);
             }
         }
-
     }
-
-
-
-
-
 
     //로그인 버튼
     public void myListener(View target) {
@@ -342,8 +329,8 @@ public class MainActivity2 extends AppCompatActivity {
                                     FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
 
                                     UserAccount account = new UserAccount();  //VO
-                                    account.setIdToken(firebaseUser.getUid());
-                                    account.setEmailId(firebaseUser.getEmail());
+                                    //account.setIdToken(firebaseUser.getUid());
+                                    //account.setEmailId(firebaseUser.getEmail());
                                     account.setAndroid_Id(androidId);
 
                                     mDatabaseRef.child("UserAccount").child(androidId).child("android_Id").addValueEventListener(new ValueEventListener() {

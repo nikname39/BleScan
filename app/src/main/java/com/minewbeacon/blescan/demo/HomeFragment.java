@@ -312,8 +312,8 @@ public class HomeFragment extends Fragment {
                         mDisplayDate.setText(date);
                         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
                         UserAccount account = new UserAccount();
-                        account.setIdToken(firebaseUser.getUid());
-                        account.setEmailId(firebaseUser.getEmail());
+                        //account.setIdToken(firebaseUser.getUid());
+                        //account.setEmailId(firebaseUser.getEmail());
                         account.setWork_start(Timedate);
                         account.setWork_end(Timedate);
                         account.setTime_work_start(currenttime);
@@ -510,11 +510,11 @@ public class HomeFragment extends Fragment {
                 public void onClick(View v) {
                     FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
                     UserAccount account = new UserAccount();
-                    account.setIdToken(firebaseUser.getUid());
-                    account.setEmailId(firebaseUser.getEmail());
+                    //account.setIdToken(firebaseUser.getUid());
+                    //account.setEmailId(firebaseUser.getEmail());
                     account.setWork_start(Timedate);
 
-                    mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).child("name").addValueEventListener(new ValueEventListener() {
+                    mDatabaseRef.child("UserAccount").child(androidId).child("name").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             String value = dataSnapshot.getValue(String.class);
@@ -558,13 +558,13 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
                 UserAccount account = new UserAccount();
-                account.setIdToken(firebaseUser.getUid());
-                account.setEmailId(firebaseUser.getEmail());
+                //account.setIdToken(firebaseUser.getUid());
+                //account.setEmailId(firebaseUser.getEmail());
                 account.setWork_start(mParam1);
                 account.setWork_end(Timedate);
 
 
-                mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).child("name").addValueEventListener(new ValueEventListener() {
+                mDatabaseRef.child("UserAccount").child(androidId).child("name").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         String value = dataSnapshot.getValue(String.class);

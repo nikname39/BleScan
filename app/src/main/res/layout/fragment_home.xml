@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="퇴근" />
+            android:text="백그라운드 시작" />
 
         <TextView
             android:id="@+id/OnworkView"

@@ -62,6 +62,8 @@ public class MainActivity2 extends AppCompatActivity {
 
     ProgressDialog dialog;
 
+    Intent serviceIntent;
+
     private static final int REQUEST_ACCESS_FINE_LOCATION = 1000;
     private boolean isScanning;
     private static final int REQUEST_ENABLE_BT = 2;
@@ -115,8 +117,27 @@ public class MainActivity2 extends AppCompatActivity {
         checkLocationPermition();
         checkSSAID();
         checkAutologin();
+        startService();
 
 
+    }
+
+    /**
+     * 알림서비스 실행
+     */
+    public void startService()
+    {
+        serviceIntent = new Intent(this, MyService.class);
+        startService(serviceIntent);
+    }
+
+    /**
+     * 알림서비스 중지
+     */
+    public void stopService()
+    {
+        serviceIntent = new Intent(this, MyService.class);
+        stopService(serviceIntent);
     }
 
     //위치 권한 체크
@@ -306,7 +327,6 @@ public class MainActivity2 extends AppCompatActivity {
 
                         for (MinewBeacon minewBeacon : minewBeacons) {
 
-
                             String deviceName = minewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_Name).getStringValue();
                             //String deviceName = "luzent";
                             //Toast.makeText(getApplicationContext(), deviceName + " 발견", Toast.LENGTH_SHORT).show();
@@ -315,7 +335,6 @@ public class MainActivity2 extends AppCompatActivity {
 
                             EditText Wn = (EditText) findViewById(R.id.editTextTextPersonName2);
                             //mMinewBeaconManager.stopScan();
-                            Log.e("tag", String.valueOf(isScanning));
 
                             if(deviceName.equals(Name)){
                                 //Toast.makeText(getApplicationContext(), "로그인 정보 체크중.", Toast.LENGTH_SHORT).show();

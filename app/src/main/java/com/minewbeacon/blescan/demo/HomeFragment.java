@@ -10,8 +10,10 @@ import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -20,6 +22,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -27,18 +30,22 @@ import androidx.fragment.app.Fragment;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -50,6 +57,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.minew.beacon.BeaconValueIndex;
+import com.minew.beacon.BluetoothState;
+import com.minew.beacon.MinewBeacon;
+import com.minew.beacon.MinewBeaconManager;
+import com.minew.beacon.MinewBeaconManagerListener;
 import com.yuliwuli.blescan.demo.R;
 
 /**
@@ -65,7 +77,9 @@ public class HomeFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static int a;
     private final String DEFAULT = "DEFAULT";
+    private MinewBeaconManager mMinewBeaconManager;
 
     // TODO: Rename and change types of parameters
     private String mParam1= "00시00분";
@@ -170,8 +184,6 @@ public class HomeFragment extends Fragment {
                 mCheckbox.setChecked(false);
             }
         }
-
-
 
         String androidId = Settings.Secure.getString(this.getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
         //.. DAte
@@ -483,6 +495,113 @@ public class HomeFragment extends Fragment {
                             }
                         });
                         //딜레이 후 시작할 코드 작성
+
+
+
+
+
+
+
+
+
+
+                        mMinewBeaconManager = MinewBeaconManager.getInstance(mContext);
+                        if (mMinewBeaconManager != null) {
+
+                        }
+                        try {
+                            mMinewBeaconManager.startScan();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        //블루투스 감지 이벤트
+                        mMinewBeaconManager.setDeviceManagerDelegateListener(new MinewBeaconManagerListener() {
+                            /**
+                             *   if the manager find some new beacon, it will call back this method.
+                             *
+                             *  @param minewBeacons  new beacons the manager scanned
+                             */
+                            @Override
+                            public void onAppearBeacons(List<MinewBeacon> minewBeacons) {
+                                for (MinewBeacon minewBeacon : minewBeacons) {
+                                    String deviceName = minewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_Name).getStringValue();
+                                    String Name = "bluzent";
+                                    if(deviceName.equals(Name)){
+                                        //Toast.makeText(getActivity(), deviceName + "  비콘 신호가 시작졌습니다.", Toast.LENGTH_SHORT).show();
+
+                                        //break Loop1;
+                                        //android.os.Process.killProcess(android.os.Process.myPid()); // 앱 프로세스 종료
+                                    }
+                                }
+                            }
+
+                            /**
+                             *  if a beacon didn't update data in 10 seconds, we think this beacon is out of rang, the manager will call back this method.
+                             *
+                             *  @param minewBeacons beacons out of range
+                             */
+                            @Override
+                            public void onDisappearBeacons(List<MinewBeacon> minewBeacons) {
+                                for (MinewBeacon minewBeacon : minewBeacons) {
+                                    String deviceName = minewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_Name).getStringValue();
+                                    String Name = "bluzent";
+                                    if(deviceName.equals(Name)){
+                                        Toast.makeText(getActivity(), deviceName + "  비콘 신호가 끊어졌습니다.", Toast.LENGTH_SHORT).show();
+                                        android.os.Process.killProcess(android.os.Process.myPid()); // 앱 프로세스 종료
+                                    }
+                                }
+                            }
+
+                            /**
+                             *  the manager calls back this method every 1 seconds, you can get all scanned beacons.
+                             *
+                             *  @param minewBeacons all scanned beacons
+                             */
+                            @Override
+                            public void onRangeBeacons(final List<MinewBeacon> minewBeacons) {
+                                for (MinewBeacon minewBeacon : minewBeacons) {
+                                    String deviceName = minewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_Name).getStringValue();
+                                    String Name = "bluzent";
+                                    if(deviceName.equals(Name)){
+                                        //Toast.makeText(getActivity(), deviceName + "  비콘 신호가 이어졌습니다.", Toast.LENGTH_SHORT).show();
+
+                                        //break Loop1;
+                                        //android.os.Process.killProcess(android.os.Process.myPid()); // 앱 프로세스 종료
+                                    }
+                                }
+
+                            }
+
+                            /**
+                             *  the manager calls back this method when BluetoothStateChanged.
+                             *
+                             *  @param state BluetoothState
+                             */
+                            @Override
+                            public void onUpdateState(BluetoothState state) {
+                                switch (state) {
+                                    case BluetoothStatePowerOn:
+                                        Toast.makeText(getActivity(), "BluetoothStatePowerOn", Toast.LENGTH_SHORT).show();
+                                        break;
+                                    case BluetoothStatePowerOff:
+                                        Toast.makeText(getActivity(), "BluetoothStatePowerOff", Toast.LENGTH_SHORT).show();
+                                        break;
+                                }
+                            }
+                        });
+
+
+
+
+
+
+
+
+
+
+
+
                         //Toast.makeText(getActivity(), "Handler 반복.", Toast.LENGTH_SHORT).show();
                         handler.postDelayed(this,6000);
                     }
@@ -510,12 +629,6 @@ public class HomeFragment extends Fragment {
                 public void onClick(View v) {
                     EmailUtils.sendEmailToAdmin(getContext(), "개발자에게 메일보내기", new String[]{"jhbyun@bluzent.com"}, androidId, Name);
 
-
-
-
-
-
-
                 }
             });
         }catch (Exception e) {
@@ -526,65 +639,11 @@ public class HomeFragment extends Fragment {
         mBtnOffWork.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-                UserAccount account = new UserAccount();
-                //account.setIdToken(firebaseUser.getUid());
-                //account.setEmailId(firebaseUser.getEmail());
-                account.setWork_start(mParam1);
-                account.setWork_end(Timedate);
-
-
-                mDatabaseRef.child("UserAccount").child(androidId).child("name").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        String value = dataSnapshot.getValue(String.class);
-                        Name= value;
-
-                        mDatabaseRef.child("Attendance").child(date).child(Name).child("work_start").addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot datasnapshot1) {
-                                String value1 = datasnapshot1.getValue(String.class);
-                                Work = value1;
-                                mOnworkView.setText("오늘의 출근 시간:" + value1);
-
-                                mDatabaseRef.child("Attendance").child(date).child(Name).child("work_end").addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot datasnapshot2) {
-                                        String value2 = datasnapshot2.getValue(String.class);
-                                        Work = value2;
-                                        mOffworkView.setText("오늘의 퇴근 시간:"+value2);
-                                    }
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-
-                                    }
-                                });
-                                mDatabaseRef.child("Attendance").child(date).child(Name).setValue(account);
-
-
-                            }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-
-
-
-                        //mDatabaseRef.child("Attendance").child(date).child(Name).setValue(account);
-
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        //Log.e("MainActivity", String.valueOf(databaseError.toException())); // 에러문 출력
-                    }
-                });
-
-
-
-                Toast.makeText(getActivity(), "퇴근 성공", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(Intent.ACTION_MAIN); //태스크의 첫 액티비티로 시작
+                intent.addCategory(Intent.CATEGORY_HOME);   //홈화면 표시
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //새로운 태스크를 생성하여 그 태스크안에서 액티비티 추가
+                startActivity(intent);
+                Toast.makeText(getActivity(), "백그라운드 서비스 시작", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -639,6 +698,17 @@ public class HomeFragment extends Fragment {
 
             }
         });
+
+
+        //public void mOnGoHomeClick(View v){
+            //Intent intent = new Intent(Intent.ACTION_MAIN); //태스크의 첫 액티비티로 시작
+            //intent.addCategory(Intent.CATEGORY_HOME);   //홈화면 표시
+            //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //새로운 태스크를 생성하여 그 태스크안에서 액티비티 추가
+            //startActivity(intent);
+        //}
+
+
+
 
 
 

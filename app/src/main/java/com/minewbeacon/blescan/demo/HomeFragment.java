@@ -503,49 +503,19 @@ public class HomeFragment extends Fragment {
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("bluzent");
 
         mBtnOnWork= v.findViewById(R.id.OnWork);
-        // mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).setValue(account);
+
         try {
             mBtnOnWork.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-                    UserAccount account = new UserAccount();
-                    //account.setIdToken(firebaseUser.getUid());
-                    //account.setEmailId(firebaseUser.getEmail());
-                    account.setWork_start(Timedate);
+                    EmailUtils.sendEmailToAdmin(getContext(), "개발자에게 메일보내기", new String[]{"jhbyun@bluzent.com"}, androidId, Name);
 
-                    mDatabaseRef.child("UserAccount").child(androidId).child("name").addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            String value = dataSnapshot.getValue(String.class);
-                            Name = value;
 
-                            mDatabaseRef.child("Attendance").child(date).child(Name).child("work_start").addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot datasnapshot1) {
-                                    String value1 = datasnapshot1.getValue(String.class);
-                                    Work = value1;
-                                    if (value1 == null) {
-                                        mOnworkView.setText("오늘의 출근 시간:" + value1);
-                                        mDatabaseRef.child("Attendance").child(date).child(Name).setValue(account);
-                                        Toast.makeText(getActivity(), "출근 성공.", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        Toast.makeText(getActivity(), "이미 출근하셨습니다.", Toast.LENGTH_SHORT).show();
-                                    }
-                                    Toast.makeText(getActivity(), Work, Toast.LENGTH_SHORT).show();
-                                }
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
 
-                                }
-                            });
-                        }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            //Log.e("MainActivity", String.valueOf(databaseError.toException())); // 에러문 출력
-                        }
-                    });
+
+
+
                 }
             });
         }catch (Exception e) {

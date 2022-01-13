@@ -1,12 +1,19 @@
 package com.minewbeacon.blescan.demo;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.yuliwuli.blescan.demo.R;
 
@@ -25,6 +32,9 @@ public class Home2 extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private Button mBtnOpenDoor, mBtnCloseDoor;
+    private WebView wView; // 웹뷰
+
 
     public Home2() {
         // Required empty public constructor
@@ -61,6 +71,67 @@ public class Home2 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home2, container, false);
+        View v = inflater.inflate(R.layout.fragment_home2, container, false);
+
+        WebView webView = v.findViewById(R.id.wView);
+
+        mBtnOpenDoor= v.findViewById(R.id.button3);
+        // mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).setValue(account);
+        mBtnOpenDoor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                webView.getSettings().setJavaScriptEnabled(true);
+                webView.setWebViewClient(new WebViewClient());
+                webView.loadUrl("http://172.30.1.2/L");
+                webView.setOnKeyListener(new View.OnKeyListener() {
+                    @Override
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+                        if (event.getAction() == KeyEvent.ACTION_DOWN){
+                            if (keyCode == KeyEvent.KEYCODE_BACK){
+
+                                if (webView!=null){
+                                    if (webView.canGoBack()){
+                                        webView.goBack();
+                                    }else {
+                                        getActivity().onBackPressed();
+                                    }
+                                }
+                            }
+                        }return true;
+                    }
+                });
+            }
+        });
+
+        mBtnCloseDoor= v.findViewById(R.id.button4);
+        // mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).setValue(account);
+        mBtnCloseDoor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                webView.getSettings().setJavaScriptEnabled(true);
+                webView.setWebViewClient(new WebViewClient());
+                webView.loadUrl("http://172.30.1.2/H");
+                webView.setOnKeyListener(new View.OnKeyListener() {
+                    @Override
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+                        if (event.getAction() == KeyEvent.ACTION_DOWN){
+                            if (keyCode == KeyEvent.KEYCODE_BACK){
+
+                                if (webView!=null){
+                                    if (webView.canGoBack()){
+                                        webView.goBack();
+                                    }else {
+                                        getActivity().onBackPressed();
+                                    }
+                                }
+                            }
+                        }return true;
+                    }
+                });
+            }
+        });
+
+
+        return v;
     }
 }

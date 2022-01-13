@@ -26,6 +26,7 @@
             android:layout_gravity="center"
             android:text="백그라운드 시작" />
 
+
         <TextView
             android:id="@+id/OnworkView"
             android:layout_width="match_parent"

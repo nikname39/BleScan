@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=utf-8 />
+  <title>Arduino DoorLock Control</title>
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="./style.css">
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script type="text/javascript" src="https://cdn.rawgit.com/Foliotek/AjaxQ/master/ajaxq.js"></script>
+  <script type="text/javascript" src="https://cdn.rawgit.com/marcoschwartz/aREST.js/master/aREST.js"></script>
+  <script type="text/javascript" src="./script.js"></script>
+</head>
+ 
+<body>
+  <div class="container">
+    <h1>노트북 개폐장치 Control</h1>
+    <div class="row">
+    <div class="BT col-sm-12">
+    <div class="col-sm-2">도어락 1</div>
+    <div class="col-sm-2"><button id='LED1on' class='btn btn-block btn-success'>On</button></div>
+    <div class="col-sm-2"><button id='LED1off' class='btn btn-block btn-danger'>Off</button></div>
+	<div class="col-sm-5"> <p id="DoorVal">상태:닫힘</p> </div>
+  </div>  
+</body>
+</html>

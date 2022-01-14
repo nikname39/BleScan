@@ -36,8 +36,8 @@ public class MyService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
 //반복작업
-        //task = new BackgroundTask();
-        //task.execute();
+        task = new BackgroundTask();
+        task.execute();
 
         initializeNotification(); //포그라운드 생성
         return START_NOT_STICKY;

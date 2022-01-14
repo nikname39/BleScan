@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="오늘의 퇴근 시간: " />
+            android:text="마지막 근무 시간: " />
         <TextView
             android:id="@+id/TodayworkView"
             android:layout_width="match_parent"

@@ -1,5 +1,7 @@
 package com.minewbeacon.blescan.demo;
 
+import static java.lang.Thread.sleep;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -80,56 +82,25 @@ public class Home2 extends Fragment {
         mBtnOpenDoor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                webView.getSettings().setJavaScriptEnabled(true);
-                webView.setWebViewClient(new WebViewClient());
+//                webView.getSettings().setJavaScriptEnabled(true);
+//                webView.setWebViewClient(new WebViewClient());
                 webView.loadUrl("http://172.30.1.2/L");
-                webView.setOnKeyListener(new View.OnKeyListener() {
-                    @Override
-                    public boolean onKey(View v, int keyCode, KeyEvent event) {
-                        if (event.getAction() == KeyEvent.ACTION_DOWN){
-                            if (keyCode == KeyEvent.KEYCODE_BACK){
+                Toast.makeText(getActivity(), "5초 후 자동으로 닫힙니다.", Toast.LENGTH_SHORT).show();
 
-                                if (webView!=null){
-                                    if (webView.canGoBack()){
-                                        webView.goBack();
-                                    }else {
-                                        getActivity().onBackPressed();
-                                    }
-                                }
-                            }
-                        }return true;
-                    }
-                });
             }
         });
 
-        mBtnCloseDoor= v.findViewById(R.id.button4);
-        // mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).setValue(account);
-        mBtnCloseDoor.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                webView.getSettings().setJavaScriptEnabled(true);
-                webView.setWebViewClient(new WebViewClient());
-                webView.loadUrl("http://172.30.1.2/H");
-                webView.setOnKeyListener(new View.OnKeyListener() {
-                    @Override
-                    public boolean onKey(View v, int keyCode, KeyEvent event) {
-                        if (event.getAction() == KeyEvent.ACTION_DOWN){
-                            if (keyCode == KeyEvent.KEYCODE_BACK){
-
-                                if (webView!=null){
-                                    if (webView.canGoBack()){
-                                        webView.goBack();
-                                    }else {
-                                        getActivity().onBackPressed();
-                                    }
-                                }
-                            }
-                        }return true;
-                    }
-                });
-            }
-        });
+//        mBtnCloseDoor= v.findViewById(R.id.button4);
+//        // mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).setValue(account);
+//        mBtnCloseDoor.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                webView.getSettings().setJavaScriptEnabled(true);
+//                webView.setWebViewClient(new WebViewClient());
+//                webView.loadUrl("http://172.30.1.2/H");
+//
+//            }
+//        });
 
 
         return v;

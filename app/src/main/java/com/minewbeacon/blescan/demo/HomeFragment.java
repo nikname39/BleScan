@@ -643,6 +643,8 @@ public class HomeFragment extends Fragment {
                 intent.addCategory(Intent.CATEGORY_HOME);   //홈화면 표시
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //새로운 태스크를 생성하여 그 태스크안에서 액티비티 추가
                 startActivity(intent);
+                requireActivity().startService(new Intent(getContext(), MyService.class));
+
                 Toast.makeText(getActivity(), "백그라운드 서비스 시작", Toast.LENGTH_SHORT).show();
             }
         });

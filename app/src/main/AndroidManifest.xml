@@ -24,7 +24,8 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/bgs"
+        android:roundIcon="@drawable/bgs"
         android:label="스마트솔루션"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"

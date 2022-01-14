@@ -117,7 +117,7 @@ public class MainActivity2 extends AppCompatActivity {
         checkLocationPermition();
         checkSSAID();
         checkAutologin();
-        startService();
+
 
 
     }

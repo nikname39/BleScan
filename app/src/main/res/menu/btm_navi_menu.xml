@@ -17,5 +17,5 @@
         android:id="@+id/tab_home2"
         android:enabled="true"
         android:icon="@drawable/briefcase"
-        android:title="설정"/>
+        android:title="개폐"/>
 </menu>

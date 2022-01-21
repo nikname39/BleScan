@@ -58,6 +58,13 @@ import com.yuliwuli.blescan.demo.R;
 import java.util.Collections;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.POST;
+
 public class MainActivity2 extends AppCompatActivity {
 
     ProgressDialog dialog;
@@ -93,6 +100,37 @@ public class MainActivity2 extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
         //MA.finish();
         //Toast.makeText(MainActivity2.this, "블루젠트 이동", Toast.LENGTH_SHORT).show();
+
+
+        //retrofit 사용
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://jsonplaceholder.typicode.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        RetrofitAPI retrofitAPI = retrofit.create(RetrofitAPI.class);
+        retrofitAPI.getData("1").enqueue(new Callback<List<Post>>() {
+            @Override
+            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+                if(response.isSuccessful()) {
+                    List<Post> data = response.body();
+//                    for (Post post : data) {
+//                        String content = "";
+//                        content += "ID: " + post.getId() + "\n";
+//                        content += "Title: " + post.getTitle() + "\n";
+//                        content += "Content: " + post.getBody() + "\n\n";
+//                        textViewResult.append(content);
+//                    }
+                    Toast.makeText(MainActivity2.this, data.get(0).getBody(), Toast.LENGTH_SHORT).show();
+                    Log.d("Test", "성공");
+                }
+            }
+            @Override
+            public void onFailure(Call<List<Post>> call, Throwable t) {
+                Toast.makeText(MainActivity2.this, "실패.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         String androidId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
         ProgressBar progressBar = findViewById(R.id.progressBar);
@@ -117,8 +155,6 @@ public class MainActivity2 extends AppCompatActivity {
         checkLocationPermition();
         checkSSAID();
         checkAutologin();
-
-
 
     }
 
@@ -211,6 +247,7 @@ public class MainActivity2 extends AppCompatActivity {
                 } else {
                     Toast.makeText(MainActivity2.this, "SSAID 불러오기 성공", Toast.LENGTH_SHORT).show();
                     mUserName.setText(value1);
+
                 }
             }
             @Override

@@ -46,6 +46,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -239,6 +240,8 @@ public class HomeFragment extends Fragment {
         }
 
         //mDisplayDate.setText(date+" "+dayString+"요일");
+
+
         mDisplayDate.setText(date);
 
 

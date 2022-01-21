@@ -41,6 +41,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
 
     testImplementation 'junit:junit:4.12'
     implementation 'com.android.support:appcompat-v7:28.0.0'
@@ -48,7 +50,7 @@ dependencies {
     implementation files('libs/minewBeaconScan.jar')
     //bottom navigation view
     implementation 'com.google.android.material:material:1.4.0.'
-    implementation 'com.android.support:design:29.0.0'
+    implementation 'com.android.support:design:31.0.0'
 
 
 }

@@ -6,6 +6,7 @@ package com.minewbeacon.blescan.demo;
 
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -13,9 +14,11 @@ import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,6 +34,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -71,6 +76,9 @@ public class MainActivity2 extends AppCompatActivity {
 
     Intent serviceIntent;
 
+    // 클래스 선언
+    private PermissionSupport permission;
+
     private static final int REQUEST_ACCESS_FINE_LOCATION = 1000;
     private boolean isScanning;
     private static final int REQUEST_ENABLE_BT = 2;
@@ -88,19 +96,12 @@ public class MainActivity2 extends AppCompatActivity {
     private Button mLogin, mRegister;
     private int state;
 
-
-
-
     private MinewBeaconManager mMinewBeaconManager;
-    MainActivity MA = (MainActivity) MainActivity.activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-        //MA.finish();
-        //Toast.makeText(MainActivity2.this, "블루젠트 이동", Toast.LENGTH_SHORT).show();
-
 
         //retrofit 사용
         Retrofit retrofit = new Retrofit.Builder()
@@ -151,60 +152,124 @@ public class MainActivity2 extends AppCompatActivity {
 
         //블루투스, 위치권한 체크
         mMinewBeaconManager = MinewBeaconManager.getInstance(this);
+
+        ActivityResultLauncher<String[]> locationPermissionRequest =
+                registerForActivityResult(new ActivityResultContracts
+                                .RequestMultiplePermissions(), result -> {
+                            Boolean fineLocationGranted = result.getOrDefault(
+                                    Manifest.permission.ACCESS_FINE_LOCATION, false);
+                            Boolean coarseLocationGranted = result.getOrDefault(
+                                    Manifest.permission.ACCESS_COARSE_LOCATION,false);
+                            if (fineLocationGranted != null && fineLocationGranted) {
+                                // Precise location access granted.
+                                Toast.makeText(this, "fineLocationGranted.", Toast.LENGTH_SHORT).show();
+                            } else if (coarseLocationGranted != null && coarseLocationGranted) {
+                                // Only approximate location access granted.
+                                Toast.makeText(this, "coarseLocationGranted.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                // No location access granted.
+                                Toast.makeText(this, "else.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                );
+
+        locationPermissionRequest.launch(new String[] {
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+        });
+
         checkBluetooth();
         checkLocationPermition();
         checkSSAID();
-        checkAutologin();
+        //checkAutologin();
 
     }
 
-    /**
-     * 알림서비스 실행
-     */
-    public void startService()
-    {
-        serviceIntent = new Intent(this, MyService.class);
-        startService(serviceIntent);
-    }
+//    // 권한 체크
+//    private void permissionCheck() {
+//
+//        // PermissionSupport.java 클래스 객체 생성
+//        permission = new PermissionSupport(this, this);
+//
+//        // 권한 체크 후 리턴이 false로 들어오면
+//        if (!permission.checkPermission()){
+//            //권한 요청
+//            Toast.makeText(this, "권한false.", Toast.LENGTH_SHORT).show();
+//            permission.requestPermission();
+//        }
+//    }
 
-    /**
-     * 알림서비스 중지
-     */
-    public void stopService()
-    {
-        serviceIntent = new Intent(this, MyService.class);
-        stopService(serviceIntent);
-    }
+//    // Request Permission에 대한 결과 값 받아와
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        //여기서도 리턴이 false로 들어온다면 (사용자가 권한 허용 거부)
+//        if (!permission.permissionResult(requestCode, permissions, grantResults)) {
+//            // 다시 permission 요청
+//            permission.requestPermission();
+//        }
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//    }
+
+
+//    /**
+//     * 알림서비스 실행
+//     */
+//    public void startService()
+//    {
+//        serviceIntent = new Intent(this, MyService.class);
+//        startService(serviceIntent);
+//    }
+//
+//    /**
+//     * 알림서비스 중지
+//     */
+//    public void stopService()
+//    {
+//        serviceIntent = new Intent(this, MyService.class);
+//        stopService(serviceIntent);
+//    }
 
     //위치 권한 체크
     private void checkLocationPermition() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-            if(permissionCheck == PackageManager.PERMISSION_DENIED){
-                // 권한 없음
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        REQUEST_ACCESS_FINE_LOCATION);
-            } else{
-                // ACCESS_FINE_LOCATION 에 대한 권한이 이미 있음.
-            }
-        }
-// OS가 Marshmallow 이전일 경우 권한체크를 하지 않는다.
-        else{
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            // 위치정보 설정 Intent
+            new AlertDialog.Builder(MainActivity2.this)
+                    .setTitle("경고")
+                    .setMessage("GPS가 꺼져있습니다.\n ‘위치 서비스’에서 ‘Google 위치 서비스’를 체크해주세요")
+                    .setCancelable(false)	// Back Button 동작 안하도록 설정
+
+                    // "계속" 버튼
+                    .setPositiveButton("설정",new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(intent);
+
+                        }
+                    })
+
+                    // "종료" 버튼
+                    .setNegativeButton("종료", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(MainActivity2.this, "종료 버튼을 누르셨습니다", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    })
+                    .show();
         }
     }
+
     // 블루투스 권한 체크
-    /**
-     * check Bluetooth state
-     */
     private void checkBluetooth() {
         BluetoothState bluetoothState = mMinewBeaconManager.checkBluetoothState();
+        Toast.makeText(this, String.valueOf(bluetoothState), Toast.LENGTH_SHORT).show();
         switch (bluetoothState) {
             case BluetoothStateNotSupported:
                 Toast.makeText(this, "BLE를 지원하지않습니다.", Toast.LENGTH_SHORT).show();
                 finish();
                 break;
             case BluetoothStatePowerOff:
+                Toast.makeText(this, "블루투스 기능을 켜주세요.", Toast.LENGTH_SHORT).show();
                 showBLEDialog();
                 break;
             case BluetoothStatePowerOn:
@@ -212,9 +277,10 @@ public class MainActivity2 extends AppCompatActivity {
         }
     }
 
-    //
+    //블루투스 권한요청
     private void showBLEDialog() {
-        Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
     }
 
     // SSAID 정보 가져오기
@@ -229,7 +295,6 @@ public class MainActivity2 extends AppCompatActivity {
 
         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
         UserAccount account = new UserAccount();
-
 
         //account.setIdToken(firebaseUser.getUid());
         //account.setEmailId(firebaseUser.getEmail());
@@ -247,12 +312,10 @@ public class MainActivity2 extends AppCompatActivity {
                 } else {
                     Toast.makeText(MainActivity2.this, "SSAID 불러오기 성공", Toast.LENGTH_SHORT).show();
                     mUserName.setText(value1);
-
                 }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
     }
@@ -260,7 +323,6 @@ public class MainActivity2 extends AppCompatActivity {
     //자동로그인 설정
     private  void checkAutologin() {
         //자동로그인 확인
-
         Boolean check = PreferenceManager.getBoolean(mContext, "checked");
         if (check == null) {
             PreferenceManager.setBoolean(mContext, "checked", false);
@@ -311,8 +373,7 @@ public class MainActivity2 extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-//            }
-//        });
+
 
         //블루투스 감지 이벤트
         mMinewBeaconManager.setDeviceManagerDelegateListener(new MinewBeaconManagerListener() {
@@ -335,14 +396,6 @@ public class MainActivity2 extends AppCompatActivity {
             public void onDisappearBeacons(List<MinewBeacon> minewBeacons) {
                     Toast.makeText(getApplicationContext(),   "비콘 신호가 끊어졌습니다.", Toast.LENGTH_SHORT).show();
                     onDestroy();
-
-
-                /*for (MinewBeacon minewBeacon : minewBeacons) {
-                    String deviceName = minewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_Name).getStringValue();
-                    Toast.makeText(getApplicationContext(), deviceName + "  out range", Toast.LENGTH_SHORT).show();
-                }*/
-
-
             }
 
             /**
@@ -370,7 +423,7 @@ public class MainActivity2 extends AppCompatActivity {
                             String Name = "bluzent";
                             //System.out.print(deviceName);
 
-                            EditText Wn = (EditText) findViewById(R.id.editTextTextPersonName2);
+
                             //mMinewBeaconManager.stopScan();
 
                             if(deviceName.equals(Name)){
@@ -498,7 +551,6 @@ public class MainActivity2 extends AppCompatActivity {
     public void myListener3(View target) {
         Intent intent = new Intent(getApplicationContext(), Register.class);
         startActivity(intent);
-        finish();
     }
 
     @Override

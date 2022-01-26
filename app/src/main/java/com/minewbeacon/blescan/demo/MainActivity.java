@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -41,7 +42,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static Activity activity;
+
 
     private static final int REQUEST_ACCESS_FINE_LOCATION = 1000;
     private MinewBeaconManager mMinewBeaconManager;
@@ -61,228 +62,50 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        activity = MainActivity.this;
-
-        initView();
-        initManager();
-        checkBluetooth();
+        startLoading();
+        //checkBluetooth();
         checkLocationPermition();
-        initListener();
-
     }
 
+    private void startLoading() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent= new Intent(getApplicationContext(), MainActivity2.class);
+                startActivity(intent);  //Loagin화면을 띄운다.
+                finish();   //현재 액티비티 종료
+            }
+        }, 2000); // 화면에 Logo 2초간 보이기
+    }// startLoading Method..
+
+    //위치권한체크
     private void checkLocationPermition() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
             int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-
             if(permissionCheck == PackageManager.PERMISSION_DENIED){
-
                 // 권한 없음
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         REQUEST_ACCESS_FINE_LOCATION);
-
-
             } else{
-
                 // ACCESS_FINE_LOCATION 에 대한 권한이 이미 있음.
-
             }
-
-
         }
-
-// OS가 Marshmallow 이전일 경우 권한체크를 하지 않는다.
+        // OS가 Marshmallow 이전일 경우 권한체크를 하지 않는다.
         else{
-
         }
     }
 
-    /**
-     * check Bluetooth state
-     */
+    //블루투스 체크
     private void checkBluetooth() {
-        BluetoothState bluetoothState = mMinewBeaconManager.checkBluetoothState();
-        switch (bluetoothState) {
-            case BluetoothStateNotSupported:
-                Toast.makeText(this, "Not Support BLE", Toast.LENGTH_SHORT).show();
-                finish();
-                break;
-            case BluetoothStatePowerOff:
-                showBLEDialog();
-                break;
-            case BluetoothStatePowerOn:
-                break;
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (bluetoothAdapter == null) {
+            // Device doesn't support Bluetooth
         }
-    }
-
-
-    private void initView() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        mStart_scan = (TextView) findViewById(R.id.start_scan);
-
-        mRecycle = (RecyclerView) findViewById(R.id.recyeler);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        mRecycle.setLayoutManager(layoutManager);
-        mAdapter = new BeaconListAdapter();
-        mRecycle.setAdapter(mAdapter);
-        mRecycle.addItemDecoration(new RecycleViewDivider(this, LinearLayoutManager
-                .HORIZONTAL));
-    }
-
-    private void initManager() {
-        mMinewBeaconManager = MinewBeaconManager.getInstance(this);
-    }
-
-
-    private void initListener() {
-        mStart_scan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String BeaconName;
-
-                if (mMinewBeaconManager != null) {
-                    BluetoothState bluetoothState = mMinewBeaconManager.checkBluetoothState();
-                    switch (bluetoothState) {
-                        case BluetoothStateNotSupported:
-                            Toast.makeText(MainActivity.this, "Not Support BLE", Toast.LENGTH_SHORT).show();
-                            finish();
-                            break;
-                        case BluetoothStatePowerOff:
-                            showBLEDialog();
-                            return;
-                        case BluetoothStatePowerOn:
-                            break;
-                    }
-                }
-                if (isScanning) {
-                    isScanning = false;
-                    mStart_scan.setText("Start");
-                    if (mMinewBeaconManager != null) {
-                        mMinewBeaconManager.stopScan();
-                    }
-                } else {
-                    isScanning = true;
-                    mStart_scan.setText("Stop");
-                    try {
-                        mMinewBeaconManager.startScan();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        mRecycle.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                state = newState;
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
-
-        mMinewBeaconManager.setDeviceManagerDelegateListener(new MinewBeaconManagerListener() {
-            /**
-             *   if the manager find some new beacon, it will call back this method.
-             *
-             *  @param minewBeacons  new beacons the manager scanned
-             */
-            @Override
-            public void onAppearBeacons(List<MinewBeacon> minewBeacons) {
-
-            }
-
-            /**
-             *  if a beacon didn't update data in 10 seconds, we think this beacon is out of rang, the manager will call back this method.
-             *
-             *  @param minewBeacons beacons out of range
-             */
-            @Override
-            public void onDisappearBeacons(List<MinewBeacon> minewBeacons) {
-                /*for (MinewBeacon minewBeacon : minewBeacons) {
-                    String deviceName = minewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_Name).getStringValue();
-                    Toast.makeText(getApplicationContext(), deviceName + "  out range", Toast.LENGTH_SHORT).show();
-                }*/
-            }
-
-            /**
-             *  the manager calls back this method every 1 seconds, you can get all scanned beacons.
-             *
-             *  @param minewBeacons all scanned beacons
-             */
-            @Override
-            public void onRangeBeacons(final List<MinewBeacon> minewBeacons) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Collections.sort(minewBeacons, comp);
-                        Log.e("tag", state + "");
-                        for (MinewBeacon minewBeacon : minewBeacons) {
-                            String deviceName = minewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_Name).getStringValue();
-                            //Toast.makeText(getApplicationContext(), deviceName + " 발견", Toast.LENGTH_SHORT).show();
-                            String Name = "bluzent";
-                            //System.out.print(deviceName);
-                            EditText Wn = (EditText) findViewById(R.id.editTextTextPersonName2);
-
-                            if(deviceName.equals(Name)){
-                                Intent intent = new Intent(getApplicationContext(), MainActivity2.class);
-                                Toast.makeText(MainActivity.this, "블루젠트 비콘 신호 감지", Toast.LENGTH_SHORT).show();
-                                startActivity(intent);
-                                finish();
-                            }
-                            else{
-                                //Toast.makeText(MainActivity.this, "신호 없음", Toast.LENGTH_SHORT).show();
-                                //Wn.setText("비콘 ID: "+deviceName+"설정 ID: "+Name+"");
-
-                                Intent intent = new Intent(getApplicationContext(), MainActivity2.class);
-                                Toast.makeText(MainActivity.this, "블루젠트 비콘 신호 감지", Toast.LENGTH_SHORT).show();
-                                startActivity(intent);
-                                finish();
-
-                            }
-                        }
-                        if (state == 1 || state == 2) {
-                        } else {
-                            mAdapter.setItems(minewBeacons);
-                        }
-
-                    }
-                });
-            }
-
-            /**
-             *  the manager calls back this method when BluetoothStateChanged.
-             *
-             *  @param state BluetoothState
-             */
-            @Override
-            public void onUpdateState(BluetoothState state) {
-                switch (state) {
-                    case BluetoothStatePowerOn:
-                        Toast.makeText(getApplicationContext(), "BluetoothStatePowerOn", Toast.LENGTH_SHORT).show();
-                        break;
-                    case BluetoothStatePowerOff:
-                        Toast.makeText(getApplicationContext(), "BluetoothStatePowerOff", Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            }
-        });
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //stop scan
-        if (isScanning) {
-            mMinewBeaconManager.stopScan();
+        if (!bluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
     }
 

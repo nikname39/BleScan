@@ -8,7 +8,6 @@ import android.provider.Settings;
 import com.yuliwuli.blescan.demo.BuildConfig;
 
 public class EmailUtils {
-
     public static void sendEmailToAdmin(Context context, String title, String[] receivers,String android_id, String name){
         Intent email = new Intent(Intent.ACTION_SEND);
         email.putExtra(Intent.EXTRA_SUBJECT, title);

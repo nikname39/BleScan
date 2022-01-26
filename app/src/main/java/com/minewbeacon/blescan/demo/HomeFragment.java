@@ -594,17 +594,6 @@ public class HomeFragment extends Fragment {
                             }
                         });
 
-
-
-
-
-
-
-
-
-
-
-
                         //Toast.makeText(getActivity(), "Handler 반복.", Toast.LENGTH_SHORT).show();
                         handler.postDelayed(this,6000);
                     }
@@ -614,8 +603,6 @@ public class HomeFragment extends Fragment {
         } catch (Exception e) {
             Toast.makeText(getActivity(), "데이터 불러오기 실패.", Toast.LENGTH_SHORT).show();
         }
-
-
 
 
         //..

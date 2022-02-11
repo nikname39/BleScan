@@ -96,10 +96,7 @@ public class HomeFragment extends Fragment {
     private Context mContext;
     private CheckBox mCheckbox;
 
-
     final Handler handler = new Handler();
-
-
 
     public HomeFragment() {
         // Required empty public constructor
@@ -335,9 +332,6 @@ public class HomeFragment extends Fragment {
                         account.setTime_work_end(currenttime);
 
 
-
-
-
                         mDatabaseRef.child("UserAccount").child(androidId).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -550,7 +544,8 @@ public class HomeFragment extends Fragment {
                                     String deviceName = minewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_Name).getStringValue();
                                     String Name = "bluzent";
                                     if(deviceName.equals(Name)){
-                                        Toast.makeText(getActivity(), deviceName + "  비콘 신호가 끊어졌습니다.", Toast.LENGTH_SHORT).show();
+
+                                        //Toast.makeText(getActivity(), deviceName + "  비콘 신호가 끊어졌습니다.", Toast.LENGTH_SHORT).show();
                                         android.os.Process.killProcess(android.os.Process.myPid()); // 앱 프로세스 종료
                                     }
                                 }

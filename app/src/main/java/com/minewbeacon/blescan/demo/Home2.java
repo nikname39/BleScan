@@ -2,6 +2,7 @@ package com.minewbeacon.blescan.demo;
 
 import static java.lang.Thread.sleep;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,7 +18,16 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.Toast;
 
+import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
+
 import com.yuliwuli.blescan.demo.R;
+
+import org.eclipse.paho.android.service.MqttAndroidClient;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,6 +46,14 @@ public class Home2 extends Fragment {
     private String mParam2;
     private Button mBtnOpenDoor, mBtnCloseDoor;
     private WebView wView; // 웹뷰
+
+
+    static String MQTTHOST = "tcp://3.38.101.34:1883";;
+    static String USERNAME = "ebluzent_sub1";
+    static String PASSWORD = "1234";
+    String pubTopic = "SongDo/DoorLock1";
+
+    MqttAndroidClient client;
 
 
     public Home2() {
@@ -67,6 +85,8 @@ public class Home2 extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
     }
 
     @Override
@@ -77,14 +97,45 @@ public class Home2 extends Fragment {
 
         WebView webView = v.findViewById(R.id.wView);
 
+        //MQTT
+        String clientId = MqttClient.generateClientId();
+        client = new MqttAndroidClient(getActivity(), MQTTHOST, clientId);
+
+        MqttConnectOptions options = new MqttConnectOptions();
+        options.setUserName(USERNAME);
+        options.setPassword(PASSWORD.toCharArray());
+
+        try {
+            //IMqttToken token = client.connect();
+            IMqttToken token = client.connect(options);
+            token.setActionCallback(new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    Toast.makeText(getActivity(), "connected", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    Toast.makeText(getActivity(), "connection failed", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+
+
         mBtnOpenDoor= v.findViewById(R.id.button3);
-        // mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).setValue(account);
         mBtnOpenDoor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                webView.getSettings().setJavaScriptEnabled(true);
-//                webView.setWebViewClient(new WebViewClient());
-                webView.loadUrl("http://172.30.1.2/L");
+
+                String topic = pubTopic;
+                String message = "1";
+                try {
+                    client.publish(topic, message.getBytes(), 2, false);
+                } catch (MqttException e) {
+                    e.printStackTrace();
+                }
                 Toast.makeText(getActivity(), "5초 후 자동으로 닫힙니다.", Toast.LENGTH_SHORT).show();
 
             }

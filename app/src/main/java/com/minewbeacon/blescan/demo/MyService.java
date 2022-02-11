@@ -61,7 +61,7 @@ public class MyService extends Service {
         builder.setWhen(0);
         builder.setShowWhen(false);
 
-        Intent notificationIntent = new Intent(this, MainActivity2.class);
+        Intent notificationIntent = new Intent(this, attendance.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         builder.setContentIntent(pendingIntent);
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -80,8 +80,6 @@ public class MyService extends Service {
         @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
         @Override
         protected Integer doInBackground(Integer... values) {
-
-
 
             while(isCancelled() == false){
 

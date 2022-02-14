@@ -27,20 +27,35 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/DoorCheck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DoorCheck"
+            tools:layout_editor_absoluteX="166dp"
+            tools:layout_editor_absoluteY="417dp" />
+
+        <ImageView
+            android:id="@+id/DoorCheckImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:src="@drawable/padlock"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView4" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="노트북 보관함 개폐장치"
+            android:textSize="32dp"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="노트북 보관함 개폐장치"
-        android:textSize="32dp" />
-
-    <WebView
-        android:id="@+id/wView"
-        android:layout_width="0dp"
-        android:layout_height="0dp" >
-
-    </WebView>
 
 </FrameLayout>

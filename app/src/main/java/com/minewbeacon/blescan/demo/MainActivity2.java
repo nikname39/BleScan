@@ -425,18 +425,15 @@ public class MainActivity2 extends AppCompatActivity {
                         Collections.sort(minewBeacons, comp);
                         Log.e("스테이트 상태", state + "");
 
-
-
                         for (MinewBeacon minewBeacon : minewBeacons) {
 
                             String deviceName = minewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_Name).getStringValue();
-                            //String deviceName = "luzent";
-                            //Toast.makeText(getApplicationContext(), deviceName + " 발견", Toast.LENGTH_SHORT).show();
+
+                            //int deviceRssi = minewBeacon.getBeaconValue(BeaconValueIndex.MinewBeaconValueIndex_RSSI).getIntValue();
+                            //Toast.makeText(getApplicationContext(), "거리:" + deviceRssi, Toast.LENGTH_SHORT).show();
+
                             String Name = "bluzent";
-                            //System.out.print(deviceName);
 
-
-                            //mMinewBeaconManager.stopScan();
 
                             if(deviceName.equals(Name)){
                                 //Toast.makeText(getApplicationContext(), "로그인 정보 체크중.", Toast.LENGTH_SHORT).show();
@@ -571,6 +568,21 @@ public class MainActivity2 extends AppCompatActivity {
         //stop scan
         if (isScanning) {
             mMinewBeaconManager.stopScan();
+        }
+    }
+
+    public static double calculateDistance(int txPower, double rssi) {
+        if (rssi == 0) {
+            return -1.0; // if we cannot determine distance, return -1.
+        }
+
+        double ratio = rssi*1.0/txPower;
+        if (ratio < 1.0) {
+            return Math.pow(ratio,10);
+        }
+        else {
+            double accuracy =  (0.89976)*Math.pow(ratio,7.7095) + 0.111;
+            return accuracy;
         }
     }
 

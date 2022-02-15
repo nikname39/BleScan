@@ -50,10 +50,10 @@
             android:name="com.minewbeacon.blescan.demo.Register"
             android:exported="false" />
         <activity
-            android:name="com.minewbeacon.blescan.demo.MainActivity2"
+            android:name="com.minewbeacon.blescan.demo.activity.MainActivity2"
             android:exported="false" />
         <activity
-            android:name="com.minewbeacon.blescan.demo.MainActivity"
+            android:name="com.minewbeacon.blescan.demo.activity.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

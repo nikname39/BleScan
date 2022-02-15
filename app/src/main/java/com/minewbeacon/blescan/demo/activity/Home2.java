@@ -1,4 +1,4 @@
-package com.minewbeacon.blescan.demo;
+package com.minewbeacon.blescan.demo.activity;
 
 import static java.lang.Thread.sleep;
 
@@ -7,7 +7,6 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

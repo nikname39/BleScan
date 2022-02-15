@@ -3,42 +3,30 @@
  * by jh
  */
 
-package com.minewbeacon.blescan.demo;
+package com.minewbeacon.blescan.demo.activity;
 
 import android.Manifest;
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 
 import android.os.Handler;
-import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.minew.beacon.BeaconValueIndex;
-import com.minew.beacon.BluetoothState;
 import com.minew.beacon.MinewBeacon;
 import com.minew.beacon.MinewBeaconManager;
-import com.minew.beacon.MinewBeaconManagerListener;
+import com.minewbeacon.blescan.demo.BeaconListAdapter;
+import com.minewbeacon.blescan.demo.UserRssi;
 import com.yuliwuli.blescan.demo.R;
-
-import java.util.Collections;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 

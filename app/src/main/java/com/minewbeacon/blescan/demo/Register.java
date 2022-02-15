@@ -3,7 +3,6 @@ package com.minewbeacon.blescan.demo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,9 +11,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -22,11 +18,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.minewbeacon.blescan.demo.activity.MainActivity2;
 import com.yuliwuli.blescan.demo.R;
 
 public class Register extends AppCompatActivity {
 
-    private RegisterDAO dao;
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabaseRef;
     private EditText mEtEmail, mEtPwd, mEtName;

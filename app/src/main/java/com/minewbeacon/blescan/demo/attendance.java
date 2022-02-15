@@ -8,6 +8,9 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.minewbeacon.blescan.demo.activity.Home1;
+import com.minewbeacon.blescan.demo.activity.Home2;
+import com.minewbeacon.blescan.demo.activity.HomeFragment;
 import com.yuliwuli.blescan.demo.R;
 
 public class attendance extends AppCompatActivity {

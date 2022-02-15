@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
@@ -36,11 +37,15 @@ public class MyService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
 //반복작업
-        task = new BackgroundTask();
-        task.execute();
+        //task = new BackgroundTask();
+        //task.execute();
+
 
         initializeNotification(); //포그라운드 생성
-        return START_NOT_STICKY;
+
+
+
+        return START_REDELIVER_INTENT;
     }
 
     /**
@@ -60,6 +65,11 @@ public class MyService extends Service {
         builder.setStyle(style);
         builder.setWhen(0);
         builder.setShowWhen(false);
+
+        // 버튼 등록
+        builder.addAction(makeButtonInNotification("Start"));
+        builder.addAction(makeButtonInNotification("Pause"));
+        builder.addAction(makeButtonInNotification("Stop"));
 
         Intent notificationIntent = new Intent(this, attendance.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
@@ -124,6 +134,28 @@ public class MyService extends Service {
 
     public void println(String message){
         Log.d("MyService", message);
+    }
+
+    private NotificationCompat.Action makeButtonInNotification(String action) {
+        // PendingIntent로 등록될 Intent 생성
+        Intent intent = new Intent(getBaseContext(), MyService.class);
+        // Intent로 전달될 액션 설정
+        intent.setAction(action);
+
+        // PendingIntent 생성
+        PendingIntent pendingIntent = PendingIntent.getService(getBaseContext(), 1, intent, 0);
+
+        // 임의의 버튼 아이콘 등록
+        int iconId = android.R.drawable.ic_media_pause;
+
+        // 버튼 타이틀 등록
+        String btnTitle = action;
+
+        // 해당 버튼 액션 설정
+        NotificationCompat.Action notifAction
+                = new NotificationCompat.Action.Builder(iconId, btnTitle, pendingIntent).build();
+
+        return notifAction;
     }
 }
 

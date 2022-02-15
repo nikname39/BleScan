@@ -1,26 +1,33 @@
 package com.minewbeacon.blescan.demo;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 
+import com.yuliwuli.blescan.demo.BuildConfig;
 
 
 /**
  * 데이터 저장 및 로드 클래스
  */
 
-public class PreferenceManager {
+public class Utils {
     public static final String PREFERENCES_NAME = "rebuild_preference";
-
     private static final String DEFAULT_VALUE_STRING = "";
-
     private static final boolean DEFAULT_VALUE_BOOLEAN = false;
-
     private static final int DEFAULT_VALUE_INT = -1;
-
     private static final long DEFAULT_VALUE_LONG = -1L;
-
     private static final float DEFAULT_VALUE_FLOAT = -1F;
+
+    public static void sendEmailToAdmin(Context context, String title, String[] receivers,String android_id, String name){
+        Intent email = new Intent(Intent.ACTION_SEND);
+        email.putExtra(Intent.EXTRA_SUBJECT, title);
+        email.putExtra(Intent.EXTRA_EMAIL, receivers);
+        email.putExtra(Intent.EXTRA_TEXT, String.format("App Version : %s\nDevice : %s\nName : %s\nAndroid(SDK) : %d(%s)\n내용 : ", BuildConfig.VERSION_NAME, android_id, name, Build.VERSION.SDK_INT, Build.VERSION.RELEASE));
+        email.setType("message/rfc822");
+        context.startActivity(email);
+    }
 
 
 

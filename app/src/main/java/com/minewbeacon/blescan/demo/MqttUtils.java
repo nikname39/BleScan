@@ -15,7 +15,9 @@ import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
-
+/**
+ * 사용 X
+ */
 public class MqttUtils {
 
     static String MQTTHOST = "tcp://3.38.101.34:1883";
@@ -30,7 +32,6 @@ public class MqttUtils {
     static Context mContext;
 
     public MqttUtils(Context context){
-        mContext = context;
 
         //MQTT
         String clientId = MqttClient.generateClientId();
@@ -59,9 +60,7 @@ public class MqttUtils {
 
     }
 
-    public static void sendMqttPub(String pubTopic, String pubMessage){
-
-
+    public static void sendMqttPub(Context context, String pubTopic, String pubMessage){
 
         String topic = pubTopic;
         String message = pubMessage;

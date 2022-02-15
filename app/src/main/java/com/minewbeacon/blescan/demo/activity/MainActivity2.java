@@ -2,27 +2,17 @@
  * login controller
  * by jh
  */
-package com.minewbeacon.blescan.demo;
+package com.minewbeacon.blescan.demo.activity;
 
 
-import android.Manifest;
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -34,17 +24,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -58,14 +41,15 @@ import com.minew.beacon.MinewBeacon;
 import com.minew.beacon.MinewBeaconManager;
 import com.minew.beacon.MinewBeaconManagerListener;
 
+import com.minewbeacon.blescan.demo.PermissionSupport;
+import com.minewbeacon.blescan.demo.Post;
+import com.minewbeacon.blescan.demo.Register;
+import com.minewbeacon.blescan.demo.RetrofitAPI;
+import com.minewbeacon.blescan.demo.UserAccount;
+import com.minewbeacon.blescan.demo.UserRssi;
+import com.minewbeacon.blescan.demo.Utils;
+import com.minewbeacon.blescan.demo.attendance;
 import com.yuliwuli.blescan.demo.R;
-
-import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.util.Collections;
 import java.util.List;
@@ -75,13 +59,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.POST;
-
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
 
 public class MainActivity2 extends AppCompatActivity {
 
@@ -161,7 +138,7 @@ public class MainActivity2 extends AppCompatActivity {
         mContext = this;
         mUserName = findViewById(R.id.userName);
 
-        PreferenceManager.setBoolean(mContext, "Overwork", false);
+        Utils.setBoolean(mContext, "Overwork", false);
 
         //블루투스, 위치권한 체크
         mMinewBeaconManager = MinewBeaconManager.getInstance(this);
@@ -294,7 +271,7 @@ public class MainActivity2 extends AppCompatActivity {
 
                 if (value1 == null) {
                     Toast.makeText(MainActivity2.this, "가입 정보가 없습니다. 회원가입 바랍니다.", Toast.LENGTH_SHORT).show();
-                    PreferenceManager.setBoolean(mContext, "checked", false);
+                    Utils.setBoolean(mContext, "checked", false);
 
                 } else {
                     Toast.makeText(MainActivity2.this, "SSAID 불러오기 성공", Toast.LENGTH_SHORT).show();
@@ -327,19 +304,19 @@ public class MainActivity2 extends AppCompatActivity {
                     break;
                 case BluetoothStatePowerOn:
                     //자동로그인 확인
-                    Boolean check = PreferenceManager.getBoolean(mContext, "checked");
+                    Boolean check = Utils.getBoolean(mContext, "checked");
                     if (check == null) {
-                        PreferenceManager.setBoolean(mContext, "checked", false);
+                        Utils.setBoolean(mContext, "checked", false);
                     } else {
                         if (String.valueOf(check).equals("true")) {
                             mCheckbox.setChecked(true);
-                            PreferenceManager.setBoolean(mContext, "checked", true);
+                            Utils.setBoolean(mContext, "checked", true);
                             Button mLogin = (Button) findViewById(R.id.btn_login);
                             mLogin.callOnClick();
 
                         } else {
                             mCheckbox.setChecked(false);
-                            PreferenceManager.setBoolean(mContext, "checked", false);
+                            Utils.setBoolean(mContext, "checked", false);
                         }
                     }
                     break;
@@ -457,7 +434,7 @@ public class MainActivity2 extends AppCompatActivity {
                                             String value1 = datasnapshot1.getValue(String.class);
 
                                             if (value1 == null){
-                                                PreferenceManager.setBoolean(mContext, "checked", false);
+                                                Utils.setBoolean(mContext, "checked", false);
                                                 Toast.makeText(getApplicationContext(), "회원가입 바랍니다.", Toast.LENGTH_SHORT).show();
                                                 mMinewBeaconManager.stopScan();
                                                 ActivityCompat.finishAffinity(MainActivity2.this);
@@ -548,11 +525,11 @@ public class MainActivity2 extends AppCompatActivity {
 
         if (checked) {
             Toast.makeText(getApplicationContext(), "자동로그인이 설정되었습니다.", Toast.LENGTH_SHORT).show();
-            PreferenceManager.setBoolean(mContext, "checked", true);
+            Utils.setBoolean(mContext, "checked", true);
 
         } else {
             Toast.makeText(getApplicationContext(), "자동로그인이 해제되었습니다.", Toast.LENGTH_SHORT).show();
-            PreferenceManager.setBoolean(mContext, "checked", false);
+            Utils.setBoolean(mContext, "checked", false);
         }
     }
 

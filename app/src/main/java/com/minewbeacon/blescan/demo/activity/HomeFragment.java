@@ -2,19 +2,15 @@
  * work_start and end
  * by jh
  */
-package com.minewbeacon.blescan.demo;
+package com.minewbeacon.blescan.demo.activity;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
-import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -22,7 +18,6 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -30,27 +25,19 @@ import androidx.fragment.app.Fragment;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -63,6 +50,9 @@ import com.minew.beacon.BluetoothState;
 import com.minew.beacon.MinewBeacon;
 import com.minew.beacon.MinewBeaconManager;
 import com.minew.beacon.MinewBeaconManagerListener;
+import com.minewbeacon.blescan.demo.MyService;
+import com.minewbeacon.blescan.demo.UserAccount;
+import com.minewbeacon.blescan.demo.Utils;
 import com.yuliwuli.blescan.demo.R;
 
 /**
@@ -170,11 +160,11 @@ public class HomeFragment extends Fragment {
         //자동로그인 정보 불러오기
         CheckBox Autologin = v.findViewById(R.id.autoLogin);
 
-        Boolean check = PreferenceManager.getBoolean(mContext, "checked");
+        Boolean check = Utils.getBoolean(mContext, "checked");
         mCheckbox = v.findViewById(R.id.autoLogin);
 
         if (check == null) {
-            PreferenceManager.setBoolean(mContext, "checked", false);
+            Utils.setBoolean(mContext, "checked", false);
         } else {
             if (String.valueOf(check).equals("true")) {
                 mCheckbox.setChecked(true);
@@ -419,15 +409,15 @@ public class HomeFragment extends Fragment {
                                                 if (Integer.parseInt(Todaywork_Hour) >= 10) {
 
 
-                                                    Boolean overwork = PreferenceManager.getBoolean(mContext, "Overwork");
+                                                    Boolean overwork = Utils.getBoolean(mContext, "Overwork");
 
                                                     if (overwork == null) {
-                                                        PreferenceManager.setBoolean(mContext, "Overwork", false);
+                                                        Utils.setBoolean(mContext, "Overwork", false);
                                                     } else {
                                                         if (String.valueOf(overwork).equals("true")) {
 
                                                         } else {
-                                                            PreferenceManager.setBoolean(mContext, "Overwork", true);
+                                                            Utils.setBoolean(mContext, "Overwork", true);
                                                             Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
                                                             v.vibrate(new long[]{500, 1000, 500, 2000}, -1);
                                                             createNotificationChannel(DEFAULT, "default channel", NotificationManager.IMPORTANCE_HIGH);
@@ -612,7 +602,7 @@ public class HomeFragment extends Fragment {
             mBtnOnWork.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    EmailUtils.sendEmailToAdmin(getContext(), "개발자에게 메일보내기", new String[]{"jhbyun@bluzent.com"}, androidId, Name);
+                    Utils.sendEmailToAdmin(getContext(), "개발자에게 메일보내기", new String[]{"jhbyun@bluzent.com"}, androidId, Name);
 
                 }
             });
@@ -675,11 +665,11 @@ public class HomeFragment extends Fragment {
 
                 if (checked) {
                     Toast.makeText(getActivity().getApplicationContext(), "자동로그인이 설정되었습니다.", Toast.LENGTH_SHORT).show();
-                    PreferenceManager.setBoolean(mContext, "checked", true);
+                    Utils.setBoolean(mContext, "checked", true);
 
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(), "자동로그인이 해제되었습니다.", Toast.LENGTH_SHORT).show();
-                    PreferenceManager.setBoolean(mContext, "checked", false);
+                    Utils.setBoolean(mContext, "checked", false);
                 }
 
 

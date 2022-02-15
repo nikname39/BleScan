@@ -51,6 +51,12 @@ import com.minewbeacon.blescan.demo.Utils;
 import com.minewbeacon.blescan.demo.attendance;
 import com.yuliwuli.blescan.demo.R;
 
+import org.altbeacon.beacon.Beacon;
+import org.altbeacon.beacon.BeaconManager;
+import org.altbeacon.beacon.RangeNotifier;
+import org.altbeacon.beacon.Region;
+
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -88,10 +94,31 @@ public class MainActivity2 extends AppCompatActivity {
 
     private MinewBeaconManager mMinewBeaconManager;
 
+    protected static final String TAG = "RangingActivity";
+    private BeaconManager beaconManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+
+
+        beaconManager = BeaconManager.getInstanceForApplication(this);
+        // To detect proprietary beacons, you must add a line like below corresponding to your beacon
+        // type.  Do a web search for "setBeaconLayout" to get the proper expression.
+        // beaconManager.getBeaconParsers().add(new BeaconParser().
+        //        setBeaconLayout("m:2-3=beac,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25"));
+        beaconManager.addRangeNotifier(new RangeNotifier() {
+            @Override
+            public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
+                if (beacons.size() > 0) {
+                    Log.i(TAG, "The first beacon I see is about "+beacons.iterator().next().getDistance()+" meters away.");
+                }
+            }
+        });
+
+        beaconManager.startRangingBeacons(new Region("myRangingUniqueId", null, null, null));
+
 
         //retrofit 사용
         Retrofit retrofit = new Retrofit.Builder()

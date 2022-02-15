@@ -11,6 +11,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -36,9 +37,13 @@ repositories {
     maven {
         url "https://repo.eclipse.org/content/repositories/paho-releases/"
     }
+    mavenCentral()
 }
 
 dependencies {
+
+    implementation 'org.altbeacon:android-beacon-library:2+'
+    implementation 'androidx.multidex:multidex:2.0.1'
 
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'

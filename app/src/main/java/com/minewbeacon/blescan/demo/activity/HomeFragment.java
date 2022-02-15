@@ -497,7 +497,7 @@ public class HomeFragment extends Fragment {
 
                         }
                         try {
-                            mMinewBeaconManager.startScan();
+                            //mMinewBeaconManager.startScan();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -666,6 +666,7 @@ public class HomeFragment extends Fragment {
                 if (checked) {
                     Toast.makeText(getActivity().getApplicationContext(), "자동로그인이 설정되었습니다.", Toast.LENGTH_SHORT).show();
                     Utils.setBoolean(mContext, "checked", true);
+                    mMinewBeaconManager.stopScan();
 
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(), "자동로그인이 해제되었습니다.", Toast.LENGTH_SHORT).show();

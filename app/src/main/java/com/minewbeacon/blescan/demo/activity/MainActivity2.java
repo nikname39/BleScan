@@ -5,12 +5,15 @@
 package com.minewbeacon.blescan.demo.activity;
 
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -80,6 +83,7 @@ public class MainActivity2 extends AppCompatActivity {
     private static final int REQUEST_ENABLE_BT = 2;
     public static Context mContext;
     public static Boolean check;
+    public static Boolean LoginCheck;
     private final String DEFAULT = "DEFAULT";
 
     UserRssi comp = new UserRssi();
@@ -94,30 +98,10 @@ public class MainActivity2 extends AppCompatActivity {
 
     private MinewBeaconManager mMinewBeaconManager;
 
-    protected static final String TAG = "RangingActivity";
-    private BeaconManager beaconManager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-
-
-        beaconManager = BeaconManager.getInstanceForApplication(this);
-        // To detect proprietary beacons, you must add a line like below corresponding to your beacon
-        // type.  Do a web search for "setBeaconLayout" to get the proper expression.
-        // beaconManager.getBeaconParsers().add(new BeaconParser().
-        //        setBeaconLayout("m:2-3=beac,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25"));
-        beaconManager.addRangeNotifier(new RangeNotifier() {
-            @Override
-            public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
-                if (beacons.size() > 0) {
-                    Log.i(TAG, "The first beacon I see is about "+beacons.iterator().next().getDistance()+" meters away.");
-                }
-            }
-        });
-
-        beaconManager.startRangingBeacons(new Region("myRangingUniqueId", null, null, null));
 
 
         //retrofit 사용
@@ -170,56 +154,15 @@ public class MainActivity2 extends AppCompatActivity {
         //블루투스, 위치권한 체크
         mMinewBeaconManager = MinewBeaconManager.getInstance(this);
 
+
+        checkPermissions(MainActivity2.this, this);
+
         checkBluetooth();
         checkLocationPermition();
         checkSSAID();
         checkAutologin();
 
     }
-
-//    // 권한 체크
-//    private void permissionCheck() {
-//
-//        // PermissionSupport.java 클래스 객체 생성
-//        permission = new PermissionSupport(this, this);
-//
-//        // 권한 체크 후 리턴이 false로 들어오면
-//        if (!permission.checkPermission()){
-//            //권한 요청
-//            Toast.makeText(this, "권한false.", Toast.LENGTH_SHORT).show();
-//            permission.requestPermission();
-//        }
-//    }
-
-//    // Request Permission에 대한 결과 값 받아와
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        //여기서도 리턴이 false로 들어온다면 (사용자가 권한 허용 거부)
-//        if (!permission.permissionResult(requestCode, permissions, grantResults)) {
-//            // 다시 permission 요청
-//            permission.requestPermission();
-//        }
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//    }
-
-
-//    /**
-//     * 알림서비스 실행
-//     */
-//    public void startService()
-//    {
-//        serviceIntent = new Intent(this, MyService.class);
-//        startService(serviceIntent);
-//    }
-//
-//    /**
-//     * 알림서비스 중지
-//     */
-//    public void stopService()
-//    {
-//        serviceIntent = new Intent(this, MyService.class);
-//        stopService(serviceIntent);
-//    }
 
     //위치 권한 체크
     private void checkLocationPermition() {
@@ -463,7 +406,7 @@ public class MainActivity2 extends AppCompatActivity {
                                             if (value1 == null){
                                                 Utils.setBoolean(mContext, "checked", false);
                                                 Toast.makeText(getApplicationContext(), "회원가입 바랍니다.", Toast.LENGTH_SHORT).show();
-                                                mMinewBeaconManager.stopScan();
+
                                                 ActivityCompat.finishAffinity(MainActivity2.this);
                                             } else {
                                                 if (value1.equals(androidId)) {
@@ -473,7 +416,7 @@ public class MainActivity2 extends AppCompatActivity {
 
                                                     CheckBox Autologin = findViewById(R.id.autoLogin);
 
-                                                    mMinewBeaconManager.stopScan();
+
                                                     Intent intent = new Intent(getApplicationContext(), attendance.class);
 
                                                     startActivity(intent);
@@ -481,7 +424,7 @@ public class MainActivity2 extends AppCompatActivity {
 
                                                 } else {
                                                     Toast.makeText(getApplicationContext(), "정보를 입력해주세요.", Toast.LENGTH_SHORT).show();
-                                                    mMinewBeaconManager.stopScan();
+
                                                 }
                                             }
 
@@ -495,7 +438,7 @@ public class MainActivity2 extends AppCompatActivity {
 
                                 } catch (Exception e) {
                                     Toast.makeText(getApplicationContext(), "정보를 입력해주세요.", Toast.LENGTH_SHORT).show();
-                                    mMinewBeaconManager.stopScan();
+
                                 }
 //                                Intent intent = new Intent(getApplicationContext(), MainActivity2.class);
 //                                Toast.makeText(MainActivity.this, "블루젠트 비콘 신호 감지", Toast.LENGTH_SHORT).show();
@@ -506,7 +449,7 @@ public class MainActivity2 extends AppCompatActivity {
                                 //Wn.setText("비콘 ID: "+deviceName+"설정 ID: "+Name+"");
                                 Toast.makeText(getApplicationContext(), "비컨 신호를 인식하지 못했습니다.", Toast.LENGTH_SHORT).show();
                                 //Toast.makeText(MainActivity2.this, "블루젠트 비콘 신호 미감지", Toast.LENGTH_SHORT).show();
-                                mMinewBeaconManager.stopScan();
+
                             }
                         }
                         if (state == 1 || state == 2) {
@@ -553,6 +496,7 @@ public class MainActivity2 extends AppCompatActivity {
         if (checked) {
             Toast.makeText(getApplicationContext(), "자동로그인이 설정되었습니다.", Toast.LENGTH_SHORT).show();
             Utils.setBoolean(mContext, "checked", true);
+            mMinewBeaconManager.stopScan();
 
         } else {
             Toast.makeText(getApplicationContext(), "자동로그인이 해제되었습니다.", Toast.LENGTH_SHORT).show();
@@ -588,6 +532,31 @@ public class MainActivity2 extends AppCompatActivity {
             double accuracy =  (0.89976)*Math.pow(ratio,7.7095) + 0.111;
             return accuracy;
         }
+    }
+
+    public static void checkPermissions(Activity activity, Context context){
+        int PERMISSION_ALL = 1;
+        String[] PERMISSIONS = {
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.BLUETOOTH,
+                Manifest.permission.BLUETOOTH_ADMIN,
+                Manifest.permission.BLUETOOTH_PRIVILEGED,
+        };
+
+        if(!hasPermissions(context, PERMISSIONS)){
+            ActivityCompat.requestPermissions( activity, PERMISSIONS, PERMISSION_ALL);
+        }
+    }
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 

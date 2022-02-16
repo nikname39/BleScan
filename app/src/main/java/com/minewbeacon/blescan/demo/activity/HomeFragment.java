@@ -536,7 +536,7 @@ public class HomeFragment extends Fragment {
                                     if(deviceName.equals(Name)){
 
                                         //Toast.makeText(getActivity(), deviceName + "  비콘 신호가 끊어졌습니다.", Toast.LENGTH_SHORT).show();
-                                        android.os.Process.killProcess(android.os.Process.myPid()); // 앱 프로세스 종료
+                                        //android.os.Process.killProcess(android.os.Process.myPid()); // 앱 프로세스 종료
                                     }
                                 }
                             }
@@ -666,7 +666,6 @@ public class HomeFragment extends Fragment {
                 if (checked) {
                     Toast.makeText(getActivity().getApplicationContext(), "자동로그인이 설정되었습니다.", Toast.LENGTH_SHORT).show();
                     Utils.setBoolean(mContext, "checked", true);
-                    mMinewBeaconManager.stopScan();
 
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(), "자동로그인이 해제되었습니다.", Toast.LENGTH_SHORT).show();

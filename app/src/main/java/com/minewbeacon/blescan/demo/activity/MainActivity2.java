@@ -83,7 +83,7 @@ public class MainActivity2 extends AppCompatActivity {
     private static final int REQUEST_ENABLE_BT = 2;
     public static Context mContext;
     public static Boolean check;
-    public static Boolean LoginCheck;
+    public static Boolean LoginCheck = false;
     private final String DEFAULT = "DEFAULT";
 
     UserRssi comp = new UserRssi();
@@ -356,7 +356,7 @@ public class MainActivity2 extends AppCompatActivity {
             @Override
             public void onDisappearBeacons(List<MinewBeacon> minewBeacons) {
                     Toast.makeText(getApplicationContext(),   "비콘 신호가 끊어졌습니다.", Toast.LENGTH_SHORT).show();
-                    onDestroy();
+                    //onDestroy();
             }
 
             /**
@@ -381,69 +381,70 @@ public class MainActivity2 extends AppCompatActivity {
 
                             String Name = "bluzent";
 
-
                             if(deviceName.equals(Name)){
-                                //Toast.makeText(getApplicationContext(), "로그인 정보 체크중.", Toast.LENGTH_SHORT).show();
-                                //로그인 정보 체크
-                                dialog.setMessage("로그인 정보를 확인하는 중입니다.");
+                                //중복 실행방지
+                                if(LoginCheck == false) {
+                                    LoginCheck = true;
+                                    //로그인 정보 체크
+                                    dialog.setMessage("로그인 정보를 확인하는 중입니다.");
 
-                                try {
-                                    mFirebaseAuth = FirebaseAuth.getInstance();
-                                    mDatabaseRef = FirebaseDatabase.getInstance().getReference("bluzent");
+                                    try {
+                                        mFirebaseAuth = FirebaseAuth.getInstance();
+                                        mDatabaseRef = FirebaseDatabase.getInstance().getReference("bluzent");
 
-                                    FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
+                                        FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
 
-                                    UserAccount account = new UserAccount();  //VO
-                                    //account.setIdToken(firebaseUser.getUid());
-                                    //account.setEmailId(firebaseUser.getEmail());
-                                    account.setAndroid_Id(androidId);
+                                        UserAccount account = new UserAccount();  //VO
+                                        //account.setIdToken(firebaseUser.getUid());
+                                        //account.setEmailId(firebaseUser.getEmail());
+                                        account.setAndroid_Id(androidId);
 
-                                    mDatabaseRef.child("UserAccount").child(androidId).child("android_Id").addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot datasnapshot1) {
-                                            String value1 = datasnapshot1.getValue(String.class);
+                                        mDatabaseRef.child("UserAccount").child(androidId).child("android_Id").addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot datasnapshot1) {
+                                                String value1 = datasnapshot1.getValue(String.class);
 
-                                            if (value1 == null){
-                                                Utils.setBoolean(mContext, "checked", false);
-                                                Toast.makeText(getApplicationContext(), "회원가입 바랍니다.", Toast.LENGTH_SHORT).show();
+                                                if (value1 == null){
+                                                    Utils.setBoolean(mContext, "checked", false);
+                                                    Toast.makeText(getApplicationContext(), "회원가입 바랍니다.", Toast.LENGTH_SHORT).show();
 
-                                                ActivityCompat.finishAffinity(MainActivity2.this);
-                                            } else {
-                                                if (value1.equals(androidId)) {
-                                                    // 로그인 성공
-                                                    Toast.makeText(MainActivity2.this, "로그인 성공", Toast.LENGTH_SHORT).show();
-                                                    dialog.dismiss();
-
-                                                    CheckBox Autologin = findViewById(R.id.autoLogin);
-
-
-                                                    Intent intent = new Intent(getApplicationContext(), attendance.class);
-
-                                                    startActivity(intent);
-                                                    finish();
-
+                                                    ActivityCompat.finishAffinity(MainActivity2.this);
                                                 } else {
-                                                    Toast.makeText(getApplicationContext(), "정보를 입력해주세요.", Toast.LENGTH_SHORT).show();
+                                                    if (value1.equals(androidId)) {
+                                                        // 로그인 성공
+                                                        Toast.makeText(MainActivity2.this, "로그인 성공", Toast.LENGTH_SHORT).show();
+                                                        dialog.dismiss();
 
+                                                        CheckBox Autologin = findViewById(R.id.autoLogin);
+
+                                                        Intent intent = new Intent(getApplicationContext(), attendance.class);
+
+                                                        startActivity(intent);
+                                                        finish();
+
+                                                    } else {
+                                                        Toast.makeText(getApplicationContext(), "정보를 입력해주세요.", Toast.LENGTH_SHORT).show();
+
+                                                    }
                                                 }
+
                                             }
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
 
-                                        }
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
+                                            }
+                                        });
 
-                                        }
-                                    });
+                                    } catch (Exception e) {
+                                        Toast.makeText(getApplicationContext(), "정보를 입력해주세요.", Toast.LENGTH_SHORT).show();
 
-
-                                } catch (Exception e) {
-                                    Toast.makeText(getApplicationContext(), "정보를 입력해주세요.", Toast.LENGTH_SHORT).show();
-
-                                }
+                                    }
 //                                Intent intent = new Intent(getApplicationContext(), MainActivity2.class);
 //                                Toast.makeText(MainActivity.this, "블루젠트 비콘 신호 감지", Toast.LENGTH_SHORT).show();
 //                                startActivity(intent);
 //                                finish();
+                                }
+
                             } else{
                                 //Toast.makeText(MainActivity.this, "신호 없음", Toast.LENGTH_SHORT).show();
                                 //Wn.setText("비콘 ID: "+deviceName+"설정 ID: "+Name+"");
@@ -496,7 +497,6 @@ public class MainActivity2 extends AppCompatActivity {
         if (checked) {
             Toast.makeText(getApplicationContext(), "자동로그인이 설정되었습니다.", Toast.LENGTH_SHORT).show();
             Utils.setBoolean(mContext, "checked", true);
-            mMinewBeaconManager.stopScan();
 
         } else {
             Toast.makeText(getApplicationContext(), "자동로그인이 해제되었습니다.", Toast.LENGTH_SHORT).show();

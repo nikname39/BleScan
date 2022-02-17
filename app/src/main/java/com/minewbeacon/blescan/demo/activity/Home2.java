@@ -94,7 +94,26 @@ public class Home2 extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_home2, container, false);
 
+        mDoorCheck = v.findViewById(R.id.DoorCheck);
+        mDoorCheckImage = v.findViewById(R.id.DoorCheckImage);
+        mBtnOpenDoor= v.findViewById(R.id.button3);
 
+        MqttInit();
+        MqttSubCallback();
+
+        //도어락 열기 버튼
+        mBtnOpenDoor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMqttPub("SongDo/DoorLock1", "1");
+
+            }
+        });
+        return v;
+    }
+
+    //Mqtt 연결 시작
+    private void MqttInit() {
         //MQTT
         String clientId = MqttClient.generateClientId();
         client = new MqttAndroidClient(getActivity(), MQTTHOST, clientId);
@@ -102,41 +121,6 @@ public class Home2 extends Fragment {
         MqttConnectOptions options = new MqttConnectOptions();
         options.setUserName(USERNAME);
         options.setPassword(PASSWORD.toCharArray());
-
-        mDoorCheck = v.findViewById(R.id.DoorCheck);
-        mDoorCheckImage = v.findViewById(R.id.DoorCheckImage);
-
-
-        client.setCallback(new MqttCallback() {  //클라이언트의 콜백을 처리하는부분
-
-            @Override
-            public void connectionLost(Throwable cause) {
-
-            }
-
-            @Override
-            public void messageArrived(String topic, MqttMessage message) throws Exception {    //모든 메시지가 올때 Callback method
-                if (topic.equals("SongDo/DoorLock1")){     //topic 별로 분기처리하여 작업을 수행할수도있음
-                    String msg = new String(message.getPayload());
-                    //Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
-                    if (msg.equals("1")){
-                        mDoorCheck.setText("열림");
-                        mDoorCheckImage.setImageResource(R.drawable.padlockopen);
-                    }
-                    else{
-                        mDoorCheck.setText("닫힘");
-                        mDoorCheckImage.setImageResource(R.drawable.padlock);
-                    }
-
-                }
-            }
-
-            @Override
-            public void deliveryComplete(IMqttDeliveryToken token) {
-
-            }
-        });
-
 
         try {
             IMqttToken token = client.connect(options);
@@ -164,20 +148,41 @@ public class Home2 extends Fragment {
             e.printStackTrace();
         }
 
-        mBtnOpenDoor= v.findViewById(R.id.button3);
-        mBtnOpenDoor.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //MqttUtils mqttutils = new MqttUtils(getActivity());
-                //mqttutils.sendMqttPub("SongDo/DoorLock1", "1");
+    }
 
-                sendMqttPub("SongDo/DoorLock1", "1");
+    //Mqtt Sub 시작
+    private void MqttSubCallback() {
+        client.setCallback(new MqttCallback() {  //클라이언트의 콜백을 처리하는부분
+
+            @Override
+            public void connectionLost(Throwable cause) {
+            }
+
+            @Override
+            public void messageArrived(String topic, MqttMessage message) throws Exception {    //모든 메시지가 올때 Callback method
+                if (topic.equals("SongDo/DoorLock1")){     //topic 별로 분기처리하여 작업을 수행할수도있음
+                    String msg = new String(message.getPayload());
+                    //Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                    if (msg.equals("1")){
+                        mDoorCheck.setText("열림");
+                        mDoorCheckImage.setImageResource(R.drawable.padlockopen);
+                    }
+                    else{
+                        mDoorCheck.setText("닫힘");
+                        mDoorCheckImage.setImageResource(R.drawable.padlock);
+                    }
+
+                }
+            }
+
+            @Override
+            public void deliveryComplete(IMqttDeliveryToken token) {
 
             }
         });
-        return v;
     }
 
+    //Mqtt Pub 시작
     private void sendMqttPub(String pubTopic, String pubMessage) {
         String topic = pubTopic;
         String message = pubMessage;
@@ -188,30 +193,5 @@ public class Home2 extends Fragment {
         }
         Toast.makeText(getActivity(), "5초 후 자동으로 닫힙니다.", Toast.LENGTH_SHORT).show();
     }
-
-    private void DoorCheck(){
-        // 스레드로 돌아야함. 2초 걸림
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(true) {
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getActivity(), "쓰레드 동작.", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }
-        }).start();
-    }
-
-
-
 
 }

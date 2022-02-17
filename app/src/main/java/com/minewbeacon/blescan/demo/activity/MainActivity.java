@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.minew.beacon.MinewBeacon;
 import com.minew.beacon.MinewBeaconManager;
-import com.minewbeacon.blescan.demo.BeaconListAdapter;
 import com.minewbeacon.blescan.demo.UserRssi;
 import com.yuliwuli.blescan.demo.R;
 
@@ -36,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     private MinewBeaconManager mMinewBeaconManager;
     private MinewBeacon mMinewBeacon;
     private RecyclerView mRecycle;
-    private BeaconListAdapter mAdapter;
     private static final int REQUEST_ENABLE_BT = 2;
     private boolean isScanning;
 

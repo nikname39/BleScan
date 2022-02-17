@@ -1,4 +1,4 @@
-package com.minewbeacon.blescan.demo;
+package com.minewbeacon.blescan.demo.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +24,7 @@ import com.minew.beacon.BluetoothState;
 import com.minew.beacon.MinewBeacon;
 import com.minew.beacon.MinewBeaconManager;
 import com.minew.beacon.MinewBeaconManagerListener;
+import com.minewbeacon.blescan.demo.Utils;
 import com.minewbeacon.blescan.demo.activity.Home1;
 import com.minewbeacon.blescan.demo.activity.Home2;
 import com.minewbeacon.blescan.demo.activity.HomeFragment;
@@ -230,13 +231,13 @@ public class attendance extends AppCompatActivity {
 
                     } else if (DeviceId.equals("e2c56db5-dffb-48d2-b060-d0f5a71096e0")  && DeviceName.equals("bluzent")) {
                         Log.i(TAG, "------------------------------------------------거리: "+beacon.getDistance());
-                        Log.i(TAG, "------------------------------------------------거리: "+calculateAccuracy(beacon.getTxPower(),beacon.getRssi()));
+                        Log.i(TAG, "------------------------------------------------거리: "+ Utils.calculateAccuracy(beacon.getTxPower(),beacon.getRssi()));
                         Log.i(TAG, "------------------------------------------------tx: "+beacon.getTxPower());
                         Log.i(TAG, "------------------------------------------------------------------------------------------------: "+beacon.getTxPower());
-                        Toast.makeText(getApplicationContext(), "거리: "+calculateAccuracy(beacon.getTxPower(),beacon.getRssi()), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "거리: "+Utils.calculateAccuracy(beacon.getTxPower(),beacon.getRssi()), Toast.LENGTH_SHORT).show();
                         //Bluzent Beacon
                         //Toast.makeText(getApplicationContext(), "거리:" + beacon.getDistance(), Toast.LENGTH_SHORT).show();
-                        if(calculateAccuracy(beacon.getTxPower(),beacon.getRssi())<2){
+                        if(Utils.calculateAccuracy(beacon.getTxPower(),beacon.getRssi())<2){
                             if(DistanceCheck==false) {
                                 DistanceCheck=true;
                                 Toast.makeText(getApplicationContext(), "5M이하 접근:", Toast.LENGTH_SHORT).show();
@@ -265,23 +266,6 @@ public class attendance extends AppCompatActivity {
 
 
     }
-
-    protected static double calculateAccuracy(int txPower, double rssi) {
-        if (rssi == 0) {
-            return -1.0; // if we cannot determine accuracy, return -1.
-        }
-
-        double ratio = rssi*1.0/txPower;
-        if (ratio < 1.0) {
-            return Math.pow(ratio,10);
-        }
-        else {
-            double accuracy =  (0.89976)*Math.pow(ratio,7.7095) + 0.111;
-            return accuracy;
-        }
-    }
-
-
 
     class TabSelectedListener implements BottomNavigationView.OnItemSelectedListener {
         @Override

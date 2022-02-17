@@ -11,11 +11,11 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
+import com.minewbeacon.blescan.demo.activity.attendance;
 import com.yuliwuli.blescan.demo.R;
 
 public class MyService extends Service {

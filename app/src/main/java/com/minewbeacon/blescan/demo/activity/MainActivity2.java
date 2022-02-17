@@ -51,15 +51,8 @@ import com.minewbeacon.blescan.demo.RetrofitAPI;
 import com.minewbeacon.blescan.demo.UserAccount;
 import com.minewbeacon.blescan.demo.UserRssi;
 import com.minewbeacon.blescan.demo.Utils;
-import com.minewbeacon.blescan.demo.attendance;
 import com.yuliwuli.blescan.demo.R;
 
-import org.altbeacon.beacon.Beacon;
-import org.altbeacon.beacon.BeaconManager;
-import org.altbeacon.beacon.RangeNotifier;
-import org.altbeacon.beacon.Region;
-
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -345,7 +338,7 @@ public class MainActivity2 extends AppCompatActivity {
              */
             @Override
             public void onAppearBeacons(List<MinewBeacon> minewBeacons) {
-                Toast.makeText(getApplicationContext(),   "새로운 비콘 신호가 탐지되었습니다.", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(),   "새로운 비콘 신호가 탐지되었습니다.", Toast.LENGTH_SHORT).show();
             }
 
             /**
@@ -355,7 +348,7 @@ public class MainActivity2 extends AppCompatActivity {
              */
             @Override
             public void onDisappearBeacons(List<MinewBeacon> minewBeacons) {
-                    Toast.makeText(getApplicationContext(),   "비콘 신호가 끊어졌습니다.", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(),   "비콘 신호가 끊어졌습니다.", Toast.LENGTH_SHORT).show();
                     //onDestroy();
             }
 

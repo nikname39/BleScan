@@ -18,4 +18,11 @@
         android:enabled="true"
         android:icon="@drawable/briefcase"
         android:title="개폐"/>
+
+    <item
+        android:id="@+id/tab_home3"
+        android:enabled="true"
+        android:icon="@drawable/setting"
+        android:title="설정"/>
+
 </menu>

@@ -11,12 +11,14 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.bluzent.mybluzent.demo.GpsTracker;
 import com.bluzent.mybluzent.demo.R;
 import com.bluzent.mybluzent.demo.Utils;
 import com.bluzent.mybluzent.demo.activity.attendanceFragment.Home1;
 import com.bluzent.mybluzent.demo.activity.attendanceFragment.Home2;
+import com.bluzent.mybluzent.demo.activity.attendanceFragment.Home3;
 import com.bluzent.mybluzent.demo.activity.attendanceFragment.HomeFragment;
 
 
@@ -273,6 +275,10 @@ public class attendance extends AppCompatActivity {
                 }
                 case R.id.tab_home2: {
                     getSupportFragmentManager().beginTransaction().replace(R.id.home_ly, new Home2()).commit();
+                    return true;
+                }
+                case R.id.tab_home3: {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.home_ly, new Home3()).commit();
                     return true;
                 }
             }

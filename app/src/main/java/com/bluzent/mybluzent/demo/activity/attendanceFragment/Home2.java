@@ -5,7 +5,10 @@ import static java.lang.Thread.sleep;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,9 +28,17 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import com.bluzent.mybluzent.demo.GpsTracker;
 import com.bluzent.mybluzent.demo.R;
 import com.bluzent.mybluzent.demo.activity.MainActivity2;
-
+import com.naver.maps.geometry.LatLng;
+import com.naver.maps.map.CameraUpdate;
+import com.naver.maps.map.MapFragment;
+import com.naver.maps.map.NaverMap;
+import com.naver.maps.map.NaverMapOptions;
+import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.util.FusedLocationSource;
 
 
 /**
@@ -96,6 +107,8 @@ public class Home2 extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_home2, container, false);
 
+
+
         mDoorCheck = v.findViewById(R.id.DoorCheck);
         mDoorCheckImage = v.findViewById(R.id.DoorCheckImage);
         mBtnOpenDoor= v.findViewById(R.id.button3);
@@ -113,6 +126,8 @@ public class Home2 extends Fragment {
         });
         return v;
     }
+
+
 
     //Mqtt 연결 시작
     private void MqttInit() {

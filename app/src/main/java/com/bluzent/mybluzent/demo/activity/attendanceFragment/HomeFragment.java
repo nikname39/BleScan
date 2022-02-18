@@ -19,9 +19,11 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.os.Handler;
 import android.os.Vibrator;
@@ -39,6 +41,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
+import com.bluzent.mybluzent.demo.GpsTracker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -56,6 +59,14 @@ import com.bluzent.mybluzent.demo.R;
 import com.bluzent.mybluzent.demo.UserAccount;
 import com.bluzent.mybluzent.demo.Utils;
 import com.bluzent.mybluzent.demo.activity.MainActivity2;
+import com.naver.maps.geometry.LatLng;
+import com.naver.maps.map.CameraUpdate;
+import com.naver.maps.map.MapFragment;
+import com.naver.maps.map.NaverMap;
+import com.naver.maps.map.NaverMapOptions;
+import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.util.FusedLocationSource;
 
 
 /**
@@ -63,7 +74,7 @@ import com.bluzent.mybluzent.demo.activity.MainActivity2;
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -88,6 +99,11 @@ public class HomeFragment extends Fragment {
     private String Work = "";
     private Context mContext;
     private CheckBox mCheckbox;
+
+    //Naver Api
+    private FusedLocationSource locationSource;
+    private NaverMap naverMap;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
 
     final Handler handler = new Handler();
 
@@ -162,6 +178,9 @@ public class HomeFragment extends Fragment {
         mDistanceView = (TextView) v.findViewById(R.id.DistanceView);
 
         mDistanceView.setText("끽");
+
+        NaverApiInit();
+
 
 
 
@@ -726,6 +745,37 @@ public class HomeFragment extends Fragment {
         return v;
 }
 
+    private void NaverApiInit() {
+        //Naver 지도
+        NaverMapOptions options = new NaverMapOptions()
+                .mapType(NaverMap.MapType.Basic)
+                .enabledLayerGroups(NaverMap.LAYER_GROUP_TRAFFIC, NaverMap.LAYER_GROUP_TRANSIT);
+
+        FragmentManager fm = getChildFragmentManager();
+        MapFragment mapFragment = (MapFragment)fm.findFragmentById(R.id.map);
+        if (mapFragment == null) {
+            mapFragment = MapFragment.newInstance(options);
+            fm.beginTransaction().add(R.id.map, mapFragment).commit();
+        }
+        mapFragment.getMapAsync(this);
+
+        locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
+    }
+
+    @UiThread
+    @Override
+    public void onMapReady(@NonNull NaverMap naverMap) {
+        // ...
+        GpsTracker gpsTracker = new GpsTracker(getActivity());
+        double currentLatitude = gpsTracker.getLatitude();
+        double currentLongitude = gpsTracker.getLongitude();
+
+        Marker marker = new Marker();
+        marker.setPosition(new LatLng(currentLatitude, currentLongitude));
+        marker.setMap(naverMap);
+        CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(currentLatitude, currentLongitude));
+        naverMap.moveCamera(cameraUpdate);
+    }
 
     public void setTextViewValue(String str) {
         mDistanceView = (TextView) getView().findViewById(R.id.DistanceView);

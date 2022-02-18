@@ -75,16 +75,17 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity2 extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity2 extends AppCompatActivity {
 
     ProgressDialog dialog;
 
     private FusedLocationSource locationSource;
     private NaverMap naverMap;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
 
     // 클래스 선언
     private static final int REQUEST_ACCESS_FINE_LOCATION = 1000;
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
+
     private boolean isScanning;
     private static final int REQUEST_ENABLE_BT = 2;
     public static Context mContext;
@@ -113,20 +114,7 @@ public class MainActivity2 extends AppCompatActivity implements OnMapReadyCallba
         setContentView(R.layout.activity_main2);
 
 
-        NaverMapOptions options = new NaverMapOptions()
-                .mapType(NaverMap.MapType.Basic)
-                .enabledLayerGroups(NaverMap.LAYER_GROUP_TRAFFIC, NaverMap.LAYER_GROUP_TRANSIT);
 
-        FragmentManager fm = getSupportFragmentManager();
-        MapFragment mapFragment = (MapFragment)fm.findFragmentById(R.id.map);
-        if (mapFragment == null) {
-            mapFragment = MapFragment.newInstance(options);
-            fm.beginTransaction().add(R.id.map, mapFragment).commit();
-        }
-        mapFragment.getMapAsync(this);
-
-        locationSource =
-                new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
 
 
         //retrofit 사용
@@ -189,20 +177,7 @@ public class MainActivity2 extends AppCompatActivity implements OnMapReadyCallba
 
     }
 
-    @UiThread
-    @Override
-    public void onMapReady(@NonNull NaverMap naverMap) {
-        // ...
-        GpsTracker gpsTracker = new GpsTracker(MainActivity2.this);
-        double currentLatitude = gpsTracker.getLatitude();
-        double currentLongitude = gpsTracker.getLongitude();
 
-        Marker marker = new Marker();
-        marker.setPosition(new LatLng(currentLatitude, currentLongitude));
-        marker.setMap(naverMap);
-        CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(currentLatitude, currentLongitude));
-        naverMap.moveCamera(cameraUpdate);
-    }
 
     //위치 권한 체크
     private void checkLocationPermition() {

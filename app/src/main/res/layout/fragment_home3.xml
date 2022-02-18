@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E3E7F5"
+    tools:context="com.bluzent.mybluzent.demo.activity.attendanceFragment.Home3">
+
+
+<!-- TODO: Update blank fragment layout -->
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="10dp"
+        android:background="#6770D7"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="12dp"
+            android:text="설정"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:textSize="25dp" />
+
+        <View
+            android:layout_marginStart="20sp"
+            android:layout_marginEnd="20sp"
+            android:layout_marginVertical="10dp"
+            android:layout_width="match_parent"
+            android:background="#ffffff"
+            android:layout_height="2px"
+            />
+
+        <Switch
+            android:background="@drawable/custom_ripple_effect"
+            android:id="@+id/switch1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="5dp"
+            android:layout_marginHorizontal="10dp"
+            android:paddingLeft="12dp"
+            android:paddingVertical="5dp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:textSize="20dp"
+            android:text="자동 로그인" />
+
+        <View
+            android:layout_marginStart="20sp"
+            android:layout_marginEnd="20sp"
+            android:layout_marginVertical="10dp"
+            android:layout_width="match_parent"
+            android:background="#ffffff"
+            android:layout_height="2px"
+            />
+
+        <Switch
+            android:background="@drawable/custom_ripple_effect"
+            android:id="@+id/switch2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="5dp"
+            android:layout_marginHorizontal="10dp"
+            android:paddingLeft="12dp"
+            android:paddingVertical="5dp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:textSize="20dp"
+            android:text="다크 모드" />
+
+        <View
+            android:layout_marginStart="20sp"
+            android:layout_marginEnd="20sp"
+            android:layout_width="match_parent"
+            android:background="#ffffff"
+            android:layout_height="2px"
+            />
+
+        <Button
+            android:id="@+id/AdminMail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:paddingLeft="12dp"
+            android:paddingVertical="5dp"
+            android:background="@drawable/custom_ripple_effect"
+            android:textStyle="bold"
+            android:gravity="left"
+            android:textColor="@android:color/white"
+            android:textSize="20dp"
+            android:text="개발자 문의" />
+
+
+
+    </LinearLayout>
+
+</FrameLayout>

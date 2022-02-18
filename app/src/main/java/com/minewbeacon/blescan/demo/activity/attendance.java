@@ -2,39 +2,30 @@ package com.minewbeacon.blescan.demo.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 
-import android.app.NotificationManager;
-import android.content.Context;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Vibrator;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
-import com.minew.beacon.BeaconValueIndex;
-import com.minew.beacon.BluetoothState;
-import com.minew.beacon.MinewBeacon;
-import com.minew.beacon.MinewBeaconManager;
-import com.minew.beacon.MinewBeaconManagerListener;
+import com.minewbeacon.blescan.demo.GpsTracker;
 import com.minewbeacon.blescan.demo.Utils;
-import com.minewbeacon.blescan.demo.activity.Home1;
-import com.minewbeacon.blescan.demo.activity.Home2;
-import com.minewbeacon.blescan.demo.activity.HomeFragment;
+import com.minewbeacon.blescan.demo.activity.attendanceFragment.Home1;
+import com.minewbeacon.blescan.demo.activity.attendanceFragment.Home2;
+import com.minewbeacon.blescan.demo.activity.attendanceFragment.HomeFragment;
 import com.yuliwuli.blescan.demo.R;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
 import org.altbeacon.beacon.MonitorNotifier;
-import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -43,11 +34,7 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.List;
 
 public class attendance extends AppCompatActivity {
 
@@ -62,6 +49,8 @@ public class attendance extends AppCompatActivity {
     static String PASSWORD = "1234";
 
     public Boolean DistanceCheck = false;
+
+
 
     final Handler handler = new Handler();
 
@@ -81,6 +70,11 @@ public class attendance extends AppCompatActivity {
         // 맨 처음 시작할 탭 설정
         bottomNavigationView.setSelectedItemId(R.id.tab_home);
 
+        GpsTracker gpsTracker = new GpsTracker(attendance.this);
+        double currentLatitude = gpsTracker.getLatitude();
+        double currentLongitude = gpsTracker.getLongitude();
+
+        Toast.makeText(getApplicationContext(), "Lat"+currentLatitude+"Long"+currentLongitude, Toast.LENGTH_SHORT).show();
 
         //MQTT
         String clientId = MqttClient.generateClientId();
@@ -234,7 +228,9 @@ public class attendance extends AppCompatActivity {
                         Log.i(TAG, "------------------------------------------------거리: "+ Utils.calculateAccuracy(beacon.getTxPower(),beacon.getRssi()));
                         Log.i(TAG, "------------------------------------------------tx: "+beacon.getTxPower());
                         Log.i(TAG, "------------------------------------------------------------------------------------------------: "+beacon.getTxPower());
-                        Toast.makeText(getApplicationContext(), "거리: "+Utils.calculateAccuracy(beacon.getTxPower(),beacon.getRssi()), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "거리: "+Utils.calculateAccuracy(beacon.getTxPower(),beacon.getRssi()), Toast.LENGTH_SHORT).show();
+
+
                         //Bluzent Beacon
                         //Toast.makeText(getApplicationContext(), "거리:" + beacon.getDistance(), Toast.LENGTH_SHORT).show();
                         if(Utils.calculateAccuracy(beacon.getTxPower(),beacon.getRssi())<2){
@@ -262,8 +258,6 @@ public class attendance extends AppCompatActivity {
         });
 
         beaconManager.startRangingBeacons(myRegion);
-
-
 
     }
 

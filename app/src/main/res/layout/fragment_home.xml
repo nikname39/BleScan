@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.minewbeacon.blescan.demo.activity.HomeFragment">
+    android:background="#E3E7F5"
+    tools:context="com.minewbeacon.blescan.demo.activity.attendanceFragment.HomeFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
@@ -12,19 +13,68 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/OnWork"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="문의하기" />
+            android:background="#6770D7"
+            android:gravity="center"
+            android:paddingTop="30sp"
+            android:paddingBottom="30sp"
+            android:textColor="@android:color/white"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:text="블루젠트 글로벌 솔루션" />
 
-        <Button
-            android:id="@+id/OffWork"
-            android:layout_width="wrap_content"
+        <View
+            android:layout_marginStart="20sp"
+            android:layout_marginEnd="20sp"
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            />
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="백그라운드 시작" />
+            android:background="#6770D7"
+            android:gravity="left"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="12dp"
+            android:text="TODAY"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#6770D7"
+            android:paddingLeft="12dp"
+            android:paddingBottom="10dp"
+            android:gravity="left"
+            android:text="근태"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:textSize="18dp" />
+        <View
+            android:layout_marginStart="20sp"
+            android:layout_marginEnd="20sp"
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#6770D7"
+            android:gravity="left"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="12dp"
+            android:text="근무현황"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:textSize="20dp" />
 
 
         <TextView
@@ -32,6 +82,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:background="#6770D7"
+            android:paddingLeft="12dp"
+            android:paddingBottom="10dp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
             android:text="오늘의 출근 시간: " />
 
         <TextView
@@ -39,29 +94,78 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:background="#6770D7"
+            android:paddingLeft="12dp"
+            android:paddingBottom="10dp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
             android:text="마지막 근무 시간: " />
         <TextView
             android:id="@+id/TodayworkView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:background="#6770D7"
+            android:paddingLeft="12dp"
+            android:paddingBottom="10dp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
             android:text="오늘의 근무 시간: " />
-        <CheckBox
-            android:id="@+id/autoLogin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_below="@+id/userName"
-            android:layout_centerHorizontal="true"
-            android:text="자동 로그인"/>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="30dp"
+                android:orientation="vertical"
+                android:paddingTop="120sp"
+                android:paddingBottom="30sp">
+
+                <TextView
+                    android:id="@+id/DistanceView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="TextView" />
+
+                <CheckBox
+                    android:id="@+id/autoLogin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/userName"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/corner_round"
+                    android:paddingHorizontal="10dp"
+                    android:text="자동 로그인" />
+
+                <Button
+                    android:id="@+id/OffWork"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/corner_round"
+                    android:paddingHorizontal="10dp"
+                    android:text="백그라운드 시작" />
+
+                <Button
+                    android:id="@+id/OnWork"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/corner_round"
+                    android:paddingHorizontal="10dp"
+                    android:text="문의하기" />
+            </LinearLayout>
+        </ScrollView>
+
+
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tvDate"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="근태"
-        android:textSize="32dp"
-        android:gravity="center"/>
 
 </FrameLayout>

@@ -1,4 +1,4 @@
-package com.minewbeacon.blescan.demo.activity;
+package com.minewbeacon.blescan.demo.activity.attendanceFragment;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;

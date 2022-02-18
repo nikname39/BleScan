@@ -44,9 +44,7 @@ import com.minew.beacon.MinewBeacon;
 import com.minew.beacon.MinewBeaconManager;
 import com.minew.beacon.MinewBeaconManagerListener;
 
-import com.minewbeacon.blescan.demo.PermissionSupport;
 import com.minewbeacon.blescan.demo.Post;
-import com.minewbeacon.blescan.demo.Register;
 import com.minewbeacon.blescan.demo.RetrofitAPI;
 import com.minewbeacon.blescan.demo.UserAccount;
 import com.minewbeacon.blescan.demo.UserRssi;
@@ -66,11 +64,7 @@ public class MainActivity2 extends AppCompatActivity {
 
     ProgressDialog dialog;
 
-    Intent serviceIntent;
-
     // 클래스 선언
-    private PermissionSupport permission;
-
     private static final int REQUEST_ACCESS_FINE_LOCATION = 1000;
     private boolean isScanning;
     private static final int REQUEST_ENABLE_BT = 2;

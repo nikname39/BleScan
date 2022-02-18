@@ -48,9 +48,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/userName"
         android:layout_centerHorizontal="true"
-        android:text="자동 로그인"
+        android:layout_marginTop="40dp"
         android:onClick="myListener2"
+        android:text="자동 로그인"
+        android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/userName" />
 
@@ -104,6 +107,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="300dp"
         android:text="이용자 정보"
+        android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -114,6 +118,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="350dp"
         android:text="없음"
+        android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

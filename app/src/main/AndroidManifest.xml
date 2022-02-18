@@ -20,6 +20,7 @@
         android:maxSdkVersion="29" />
     <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
     <uses-permission android:name="READ_PHONE_STATE" />
+    <meta-data android:name="com.kakao.sdk.AppKey" android:value="XXXXXXXXXXXXXXXXXXXXXXXXXXXX"/>
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -47,7 +48,7 @@
             android:name="com.minewbeacon.blescan.demo.activity.attendance"
             android:exported="false" />
         <activity
-            android:name="com.minewbeacon.blescan.demo.Register"
+            android:name="com.minewbeacon.blescan.demo.activity.Register"
             android:exported="false" />
         <activity
             android:name="com.minewbeacon.blescan.demo.activity.MainActivity2"

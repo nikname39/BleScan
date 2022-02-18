@@ -1,4 +1,4 @@
-package com.minewbeacon.blescan.demo;
+package com.bluzent.mybluzent.demo;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -15,8 +15,8 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-import com.minewbeacon.blescan.demo.activity.attendance;
-import com.yuliwuli.blescan.demo.R;
+import com.bluzent.mybluzent.demo.activity.attendance;
+
 
 public class MyService extends Service {
 

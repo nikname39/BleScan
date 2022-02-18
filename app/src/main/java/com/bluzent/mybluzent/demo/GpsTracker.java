@@ -1,4 +1,4 @@
-package com.minewbeacon.blescan.demo;
+package com.bluzent.mybluzent.demo;
 
 import android.Manifest;
 import android.app.Service;

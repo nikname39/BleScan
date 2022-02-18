@@ -2,7 +2,7 @@
  * login controller
  * by jh
  */
-package com.minewbeacon.blescan.demo.activity;
+package com.bluzent.mybluzent.demo.activity;
 
 
 import android.Manifest;
@@ -28,9 +28,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentManager;
 
+import com.bluzent.mybluzent.demo.GpsTracker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -44,12 +47,24 @@ import com.minew.beacon.MinewBeacon;
 import com.minew.beacon.MinewBeaconManager;
 import com.minew.beacon.MinewBeaconManagerListener;
 
-import com.minewbeacon.blescan.demo.Post;
-import com.minewbeacon.blescan.demo.RetrofitAPI;
-import com.minewbeacon.blescan.demo.UserAccount;
-import com.minewbeacon.blescan.demo.UserRssi;
-import com.minewbeacon.blescan.demo.Utils;
-import com.yuliwuli.blescan.demo.R;
+import com.bluzent.mybluzent.demo.Post;
+import com.bluzent.mybluzent.demo.R;
+import com.bluzent.mybluzent.demo.RetrofitAPI;
+import com.bluzent.mybluzent.demo.UserAccount;
+import com.bluzent.mybluzent.demo.UserRssi;
+import com.bluzent.mybluzent.demo.Utils;
+import com.naver.maps.geometry.LatLng;
+import com.naver.maps.map.CameraPosition;
+import com.naver.maps.map.CameraUpdate;
+import com.naver.maps.map.LocationTrackingMode;
+import com.naver.maps.map.MapFragment;
+import com.naver.maps.map.NaverMap;
+import com.naver.maps.map.NaverMapOptions;
+import com.naver.maps.map.NaverMapSdk;
+import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.util.FusedLocationSource;
+
 
 import java.util.Collections;
 import java.util.List;
@@ -60,12 +75,16 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity2 extends AppCompatActivity {
+public class MainActivity2 extends AppCompatActivity implements OnMapReadyCallback {
 
     ProgressDialog dialog;
 
+    private FusedLocationSource locationSource;
+    private NaverMap naverMap;
+
     // 클래스 선언
     private static final int REQUEST_ACCESS_FINE_LOCATION = 1000;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private boolean isScanning;
     private static final int REQUEST_ENABLE_BT = 2;
     public static Context mContext;
@@ -83,12 +102,31 @@ public class MainActivity2 extends AppCompatActivity {
     private Button mLogin, mRegister;
     private int state;
 
+
+
+
     private MinewBeaconManager mMinewBeaconManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+
+
+        NaverMapOptions options = new NaverMapOptions()
+                .mapType(NaverMap.MapType.Basic)
+                .enabledLayerGroups(NaverMap.LAYER_GROUP_TRAFFIC, NaverMap.LAYER_GROUP_TRANSIT);
+
+        FragmentManager fm = getSupportFragmentManager();
+        MapFragment mapFragment = (MapFragment)fm.findFragmentById(R.id.map);
+        if (mapFragment == null) {
+            mapFragment = MapFragment.newInstance(options);
+            fm.beginTransaction().add(R.id.map, mapFragment).commit();
+        }
+        mapFragment.getMapAsync(this);
+
+        locationSource =
+                new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
 
 
         //retrofit 사용
@@ -149,6 +187,21 @@ public class MainActivity2 extends AppCompatActivity {
         checkSSAID();
         checkAutologin();
 
+    }
+
+    @UiThread
+    @Override
+    public void onMapReady(@NonNull NaverMap naverMap) {
+        // ...
+        GpsTracker gpsTracker = new GpsTracker(MainActivity2.this);
+        double currentLatitude = gpsTracker.getLatitude();
+        double currentLongitude = gpsTracker.getLongitude();
+
+        Marker marker = new Marker();
+        marker.setPosition(new LatLng(currentLatitude, currentLongitude));
+        marker.setMap(naverMap);
+        CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(currentLatitude, currentLongitude));
+        naverMap.moveCamera(cameraUpdate);
     }
 
     //위치 권한 체크
@@ -545,6 +598,8 @@ public class MainActivity2 extends AppCompatActivity {
         }
         return true;
     }
+
+
 
 
 

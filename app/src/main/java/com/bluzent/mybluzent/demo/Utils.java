@@ -1,11 +1,11 @@
-package com.minewbeacon.blescan.demo;
+package com.bluzent.mybluzent.demo;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 
-import com.yuliwuli.blescan.demo.BuildConfig;
+
 
 
 /**

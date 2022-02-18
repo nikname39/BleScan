@@ -3,7 +3,7 @@
  * by jh
  */
 
-package com.minewbeacon.blescan.demo.activity;
+package com.bluzent.mybluzent.demo.activity;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
@@ -24,8 +24,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.minew.beacon.MinewBeacon;
 import com.minew.beacon.MinewBeaconManager;
-import com.minewbeacon.blescan.demo.UserRssi;
-import com.yuliwuli.blescan.demo.R;
+import com.bluzent.mybluzent.demo.R;
+import com.bluzent.mybluzent.demo.UserRssi;
+
 
 public class MainActivity extends AppCompatActivity {
 

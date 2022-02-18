@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#E3E7F5"
-    tools:context="com.minewbeacon.blescan.demo.activity.attendanceFragment.HomeFragment">
+    tools:context="com.bluzent.mybluzent.demo.activity.attendanceFragment.HomeFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout

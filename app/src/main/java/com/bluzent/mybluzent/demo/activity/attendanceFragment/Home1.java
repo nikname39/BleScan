@@ -1,4 +1,4 @@
-package com.minewbeacon.blescan.demo.activity.attendanceFragment;
+package com.bluzent.mybluzent.demo.activity.attendanceFragment;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -10,7 +10,8 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.yuliwuli.blescan.demo.R;
+import com.bluzent.mybluzent.demo.R;
+
 
 /**
  * A simple {@link Fragment} subclass.

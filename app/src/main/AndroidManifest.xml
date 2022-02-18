@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.yuliwuli.blescan.demo">
+    package="com.bluzent.mybluzent.demo">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -20,7 +20,6 @@
         android:maxSdkVersion="29" />
     <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
     <uses-permission android:name="READ_PHONE_STATE" />
-    <meta-data android:name="com.kakao.sdk.AppKey" android:value="XXXXXXXXXXXXXXXXXXXXXXXXXXXX"/>
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -35,26 +34,30 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
 
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="wkuh0axtac" />
+
 
         <service android:name="org.eclipse.paho.android.service.MqttService">
         </service>
 
         <service
-            android:name="com.minewbeacon.blescan.demo.MyService"
+            android:name="com.bluzent.mybluzent.demo.MyService"
             android:enabled="true"
             android:exported="true"></service>
 
         <activity
-            android:name="com.minewbeacon.blescan.demo.activity.attendance"
+            android:name="com.bluzent.mybluzent.demo.activity.attendance"
             android:exported="false" />
         <activity
-            android:name="com.minewbeacon.blescan.demo.activity.Register"
+            android:name="com.bluzent.mybluzent.demo.activity.Register"
             android:exported="false" />
         <activity
-            android:name="com.minewbeacon.blescan.demo.activity.MainActivity2"
+            android:name="com.bluzent.mybluzent.demo.activity.MainActivity2"
             android:exported="false" />
         <activity
-            android:name="com.minewbeacon.blescan.demo.activity.MainActivity"
+            android:name="com.bluzent.mybluzent.demo.activity.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,26 +1,24 @@
-package com.minewbeacon.blescan.demo.activity;
+package com.bluzent.mybluzent.demo.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.minewbeacon.blescan.demo.GpsTracker;
-import com.minewbeacon.blescan.demo.Utils;
-import com.minewbeacon.blescan.demo.activity.attendanceFragment.Home1;
-import com.minewbeacon.blescan.demo.activity.attendanceFragment.Home2;
-import com.minewbeacon.blescan.demo.activity.attendanceFragment.HomeFragment;
-import com.yuliwuli.blescan.demo.R;
+import com.bluzent.mybluzent.demo.GpsTracker;
+import com.bluzent.mybluzent.demo.R;
+import com.bluzent.mybluzent.demo.Utils;
+import com.bluzent.mybluzent.demo.activity.attendanceFragment.Home1;
+import com.bluzent.mybluzent.demo.activity.attendanceFragment.Home2;
+import com.bluzent.mybluzent.demo.activity.attendanceFragment.HomeFragment;
+
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconManager;

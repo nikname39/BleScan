@@ -6,7 +6,7 @@ android {
     buildToolsVersion '30.0.2'
 
     defaultConfig {
-        applicationId "com.minewbeacon.blescan.demo"
+        applicationId "com.bluzent.mybluzent.demo"
         minSdkVersion 18
         targetSdkVersion 28
         versionCode 1
@@ -42,6 +42,9 @@ repositories {
 
 dependencies {
 
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
+
+    implementation 'com.naver.maps:map-sdk:3.14.0'
     implementation 'org.altbeacon:android-beacon-library:2+'
     implementation 'androidx.multidex:multidex:2.0.1'
 

@@ -1,4 +1,4 @@
-package com.minewbeacon.blescan.demo.activity.attendanceFragment;
+package com.bluzent.mybluzent.demo.activity.attendanceFragment;
 
 import static java.lang.Thread.sleep;
 
@@ -25,8 +25,9 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import com.minewbeacon.blescan.demo.activity.MainActivity2;
-import com.yuliwuli.blescan.demo.R;
+import com.bluzent.mybluzent.demo.R;
+import com.bluzent.mybluzent.demo.activity.MainActivity2;
+
 
 
 /**

@@ -1,13 +1,10 @@
-package com.minewbeacon.blescan.demo;
+package com.bluzent.mybluzent.demo;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.yuliwuli.blescan.demo.BuildConfig;
+
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;

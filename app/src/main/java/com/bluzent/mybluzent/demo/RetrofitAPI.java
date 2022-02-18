@@ -1,4 +1,4 @@
-package com.minewbeacon.blescan.demo;
+package com.bluzent.mybluzent.demo;
 
 import java.util.HashMap;
 import java.util.List;

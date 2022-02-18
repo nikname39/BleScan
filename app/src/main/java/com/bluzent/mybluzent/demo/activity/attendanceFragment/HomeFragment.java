@@ -2,7 +2,7 @@
  * work_start and end
  * by jh
  */
-package com.minewbeacon.blescan.demo.activity.attendanceFragment;
+package com.bluzent.mybluzent.demo.activity.attendanceFragment;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -51,11 +51,12 @@ import com.minew.beacon.BluetoothState;
 import com.minew.beacon.MinewBeacon;
 import com.minew.beacon.MinewBeaconManager;
 import com.minew.beacon.MinewBeaconManagerListener;
-import com.minewbeacon.blescan.demo.MyService;
-import com.minewbeacon.blescan.demo.UserAccount;
-import com.minewbeacon.blescan.demo.Utils;
-import com.minewbeacon.blescan.demo.activity.MainActivity2;
-import com.yuliwuli.blescan.demo.R;
+import com.bluzent.mybluzent.demo.MyService;
+import com.bluzent.mybluzent.demo.R;
+import com.bluzent.mybluzent.demo.UserAccount;
+import com.bluzent.mybluzent.demo.Utils;
+import com.bluzent.mybluzent.demo.activity.MainActivity2;
+
 
 /**
  * A simple {@link Fragment} subclass.

@@ -1,4 +1,4 @@
-package com.minewbeacon.blescan.demo.activity;
+package com.bluzent.mybluzent.demo.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,8 +18,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.minewbeacon.blescan.demo.UserAccount;
-import com.yuliwuli.blescan.demo.R;
+import com.bluzent.mybluzent.demo.R;
+import com.bluzent.mybluzent.demo.UserAccount;
 
 public class Register extends AppCompatActivity {
 
